@@ -143,8 +143,14 @@
         .person-name {
             font-size: 1.5em;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             color: #fff;
+        }
+        
+        .person-author {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
         }
         
         .person-fact {
@@ -220,38 +226,43 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Fun Facts Database</h1>
-            <p>Share your story and discover others!</p>
+            <h1>Video Game Reviews</h1>
+            <p>Tell others about your Favourite video games!</p>
         </div>
         
         <div class="form-card">
             <form id="personForm">
                 <div class="form-group">
-                    <label for="firstName">First Name:</label>
+                    <label for="firstName">Author Name:</label>
                     <input type="text" id="firstName" placeholder="Enter your first name" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="lastName">Last Name:</label>
-                    <input type="text" id="lastName" placeholder="Enter your last name" required>
+                    <label for="lastName">Game Title:</label>
+                    <input type="text" id="gametitle" placeholder="Enter the game title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="platform">Platform:</label>
+                    <input type="text" id="platform" placeholder="Enter the game System you played this game on" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="funFact">Fun Fact About You:</label>
-                    <textarea id="funFact" rows="3" placeholder="Tell us something interesting about yourself!" required></textarea>
+                    <label for="funFact">Your Review:</label>
+                    <textarea id="funFact" rows="3" placeholder="Tell us your thoughts on this game" required></textarea>
                 </div>
                 
-                <button type="submit" class="submit-btn">Add My Story!</button>
+                <button type="submit" class="submit-btn">Add a Review!</button>
             </form>
             <div id="successMessage"></div>
         </div>
         
         <div class="people-section">
             <div class="people-header">
-                <h2>Amazing People & Their Stories</h2>
+                <h2>Recent Video Game Reviews</h2>
             </div>
             <div id="peopleGrid" class="people-grid"></div>
-            <button onclick="loadPeople()" class="refresh-btn">Refresh Stories</button>
+            <button onclick="loadPeople()" class="refresh-btn">Refresh Reviews</button>
         </div>
     </div>
 
@@ -265,10 +276,18 @@
             submitBtn.disabled = true;
             
             const person = {
+                reviewerName: document.getElementById('firstName').value,
+                gameTitle: document.getElementById('gametitle').value,
+                reviewText: document.getElementById('funFact').value,
+                platform: document.getElementById('platform').value,    
+                // Also send old field names for backward compatibility with Lambda
                 firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                funFact: document.getElementById('funFact').value
+                lastName: document.getElementById('gametitle').value,
+                funFact: document.getElementById('funFact').value,
+                platform: document.getElementById('platform').value
             };
+            
+            console.log('Submitting:', person);
             
             try {
                 const response = await fetch('/api/items', {
@@ -278,13 +297,18 @@
                 });
                 
                 if (response.ok) {
-                    showSuccessMessage('Your story has been added successfully!');
+                    const result = await response.json();
+                    console.log('Response:', result);
+                    showSuccessMessage('Your review has been added successfully!');
                     document.getElementById('personForm').reset();
                     setTimeout(() => loadPeople(), 1000);
                 } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
                     showSuccessMessage('Oops! Something went wrong. Please try again.');
                 }
             } catch (error) {
+                console.error('Submit error:', error);
                 showSuccessMessage('Error: ' + error.message);
             } finally {
                 submitBtn.textContent = originalText;
@@ -302,22 +326,24 @@
         
         async function loadPeople() {
             const gridDiv = document.getElementById('peopleGrid');
-            gridDiv.innerHTML = '<div class="loading">Loading amazing stories...</div>';
+            gridDiv.innerHTML = '<div class="loading">Loading reviews...</div>';
             
             try {
                 const response = await fetch('/api/items');
                 const people = await response.json();
                 
                 if (people.length === 0) {
-                    gridDiv.innerHTML = '<div class="loading">Be the first to share your story!</div>';
+                    gridDiv.innerHTML = '<div class="loading">Be the first to share a review!</div>';
                     return;
                 }
                 
                 gridDiv.innerHTML = people.map((person, index) => {
                     return `
                         <div class="person-card" style="animation-delay: ${index * 0.1}s">
-                            <div class="person-name">${person.firstName} ${person.lastName}</div>
-                            <div class="person-fact">${person.funFact}</div>
+                            <div class="person-name">${person.gameTitle || person.lastName || 'Unknown Game'}</div>
+                            <div class="person-author">by ${person.reviewerName || person.firstName || 'Anonymous'}</div>
+                            <div class="person-platform">${person.platform || 'No platform specified'}</div>
+                            <div class="person-fact">${person.reviewText || person.funFact || 'No review text'}</div>
                             <div class="person-date">${new Date(person.createdAt).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
