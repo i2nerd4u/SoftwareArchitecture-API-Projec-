@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Software_architecture_api</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.300" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.300" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Architect.Tests\**\*.cs" />
+    <None Remove="Architect.Tests\**" />
+    <Content Remove="Architect.Tests\**" />
+    <EmbeddedResource Remove="Architect.Tests\**" />
+  </ItemGroup>
+
+</Project>
