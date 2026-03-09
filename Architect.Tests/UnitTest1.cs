@@ -47,6 +47,33 @@ public class UnitTest1
         Assert.Empty(items);
     }
 
+    // Test 3: Check that creating an item works
+    [Fact]
+    public async Task CreateItem_ReturnsItem()
+    {
+        string json = """
+        {
+          "body": "{\"id\":\"123\",\"firstName\":\"Alice\",\"lastName\":\"Minecraft\",\"funFact\":\"Great game\"}"
+        }
+        """;
+
+        var controller = CreateController(HttpStatusCode.OK, json);
+
+        var item = new Item
+        {
+            FirstName = "Alice",
+            LastName = "Minecraft",
+            FunFact = "Great game"
+        };
+
+        var result = await controller.CreateItem(item);
+
+        var created = Assert.IsType<CreatedAtActionResult>(result.Result);
+        var returnedItem = Assert.IsType<Item>(created.Value);
+
+        Assert.Equal("Alice", returnedItem.FirstName);
+    }
+
     private ItemsController CreateController(HttpStatusCode code, string response)
     {
         var handler = new FakeHandler(code, response);
