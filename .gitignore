@@ -3,3 +3,9 @@ obj/
 *.user
 *.suo
 /bin/
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+TestResults/
