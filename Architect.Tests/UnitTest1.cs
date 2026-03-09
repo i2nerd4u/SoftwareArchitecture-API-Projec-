@@ -31,6 +31,22 @@ public class UnitTest1
         Assert.Equal("John", items[0].FirstName);
     }
 
+    // Test 2: Check that an empty list works
+    [Fact]
+    public async Task GetItems_ReturnsEmptyList()
+    {
+        string json = """{ "body": "[]" }""";
+
+        var controller = CreateController(HttpStatusCode.OK, json);
+
+        var result = await controller.GetItems();
+
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var items = Assert.IsType<List<Item>>(ok.Value);
+
+        Assert.Empty(items);
+    }
+
     private ItemsController CreateController(HttpStatusCode code, string response)
     {
         var handler = new FakeHandler(code, response);
