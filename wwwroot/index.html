@@ -230,6 +230,14 @@
             <p>Tell others about your Favourite video games!</p>
         </div>
         
+        <!-- Navigation Tabs -->
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 30px;">
+            <button onclick="showSection('reviews')" id="reviewsTab" class="tab-btn active" style="background: rgba(255,255,255,0.3); padding: 15px 30px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer;">Reviews</button>
+            <button onclick="showSection('games')" id="gamesTab" class="tab-btn" style="background: rgba(255,255,255,0.1); padding: 15px 30px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer;">Games Database</button>
+        </div>
+        
+        <!-- Reviews Section -->
+        <div id="reviewsSection">
         <div class="form-card">
             <form id="personForm">
                 <div class="form-group">
@@ -264,9 +272,133 @@
             <div id="peopleGrid" class="people-grid"></div>
             <button onclick="loadPeople()" class="refresh-btn">Refresh Reviews</button>
         </div>
+        </div>
+        
+        <!-- Games Section -->
+        <div id="gamesSection" style="display: none;">
+        <div class="form-card">
+            <h2 style="margin-bottom: 20px;">Add New Game</h2>
+            <form id="gameForm">
+                <div class="form-group">
+                    <label for="gameTitle">Game Title:</label>
+                    <input type="text" id="gameTitle" placeholder="Enter game title" required>
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre:</label>
+                    <input type="text" id="genre" placeholder="e.g., Action, RPG, Puzzle" required>
+                </div>
+                <div class="form-group">
+                    <label for="developer">Developer:</label>
+                    <input type="text" id="developer" placeholder="Game developer" required>
+                </div>
+                <div class="form-group">
+                    <label for="gamePlatform">Platform:</label>
+                    <input type="text" id="gamePlatform" placeholder="e.g., PS5, Xbox, PC" required>
+                </div>
+                <div class="form-group">
+                    <label for="releaseYear">Release Year:</label>
+                    <input type="text" id="releaseYear" placeholder="2024" required>
+                </div>
+                <button type="submit" class="submit-btn">Add Game</button>
+            </form>
+            <div id="gameSuccessMessage"></div>
+        </div>
+        
+        <div class="people-section">
+            <div class="people-header">
+                <h2>Games Database</h2>
+            </div>
+            <div id="gamesGrid" class="people-grid"></div>
+            <button onclick="loadGames()" class="refresh-btn">Refresh Games</button>
+        </div>
+        </div>
     </div>
 
     <script>
+        function showSection(section) {
+            if (section === 'reviews') {
+                document.getElementById('reviewsSection').style.display = 'block';
+                document.getElementById('gamesSection').style.display = 'none';
+                document.getElementById('reviewsTab').style.background = 'rgba(255,255,255,0.3)';
+                document.getElementById('gamesTab').style.background = 'rgba(255,255,255,0.1)';
+                loadPeople();
+            } else {
+                document.getElementById('reviewsSection').style.display = 'none';
+                document.getElementById('gamesSection').style.display = 'block';
+                document.getElementById('reviewsTab').style.background = 'rgba(255,255,255,0.1)';
+                document.getElementById('gamesTab').style.background = 'rgba(255,255,255,0.3)';
+                loadGames();
+            }
+        }
+        
+        document.getElementById('gameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.textContent = 'Adding Game...';
+            submitBtn.disabled = true;
+            
+            const game = {
+                title: document.getElementById('gameTitle').value,
+                genre: document.getElementById('genre').value,
+                developer: document.getElementById('developer').value,
+                platform: document.getElementById('gamePlatform').value,
+                releaseYear: document.getElementById('releaseYear').value
+            };
+            
+            try {
+                const response = await fetch('/api/games', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(game)
+                });
+                
+                if (response.ok) {
+                    showGameSuccessMessage('Game added successfully!');
+                    document.getElementById('gameForm').reset();
+                    setTimeout(() => loadGames(), 1000);
+                } else {
+                    showGameSuccessMessage('Error adding game. Please try again.');
+                }
+            } catch (error) {
+                showGameSuccessMessage('Error: ' + error.message);
+            } finally {
+                submitBtn.textContent = 'Add Game';
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function showGameSuccessMessage(message) {
+            const messageDiv = document.getElementById('gameSuccessMessage');
+            messageDiv.innerHTML = `<div class="success-message">${message}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 4000);
+        }
+        
+        async function loadGames() {
+            const gridDiv = document.getElementById('gamesGrid');
+            gridDiv.innerHTML = '<div class="loading">Loading games...</div>';
+            
+            try {
+                const response = await fetch('/api/games');
+                const games = await response.json();
+                
+                if (games.length === 0) {
+                    gridDiv.innerHTML = '<div class="loading">No games yet. Add the first one!</div>';
+                    return;
+                }
+                
+                gridDiv.innerHTML = games.map((game, index) => `
+                    <div class="person-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="person-name">${game.title}</div>
+                        <div class="person-author">Genre: ${game.genre}</div>
+                        <div class="person-fact">Developer: ${game.developer}<br>Platform: ${game.platform}<br>Released: ${game.releaseYear}</div>
+                        <div class="person-date">${new Date(game.createdAt).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                gridDiv.innerHTML = '<div class="loading">Error loading games. Please try again!</div>';
+            }
+        }
         document.getElementById('personForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
