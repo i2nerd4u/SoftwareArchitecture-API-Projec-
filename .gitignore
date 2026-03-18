@@ -45,3 +45,13 @@ packages/
 # Test results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
+
+# Other IDE / OS files
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+
+# Test project build folders
+Architect.Tests/bin/
+Architect.Tests/obj/
