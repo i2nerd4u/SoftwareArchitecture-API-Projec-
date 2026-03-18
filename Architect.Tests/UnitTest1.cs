@@ -31,7 +31,7 @@ public class UnitTest1
         Assert.Equal("John", items[0].FirstName);
     }
 
-    // Test 2: Check that an empty list works
+    // Test 2: Check that an empty list is returned correctly
     [Fact]
     public async Task GetItems_ReturnsEmptyList()
     {
@@ -47,7 +47,7 @@ public class UnitTest1
         Assert.Empty(items);
     }
 
-    // Test 3: Check that creating an item works
+    // Test 3: Check that creating an item returns the created item
     [Fact]
     public async Task CreateItem_ReturnsItem()
     {
@@ -74,7 +74,7 @@ public class UnitTest1
         Assert.Equal("Alice", returnedItem.FirstName);
     }
 
-    // Test 4: Check that the controller handles errors
+    // Test 4: Check that the controller handles errors correctly
     [Fact]
     public async Task GetItems_ReturnsError()
     {
@@ -87,6 +87,7 @@ public class UnitTest1
         Assert.Equal(500, error.StatusCode);
     }
 
+    // Helper method: Creates controller with fake HTTP response
     private ItemsController CreateController(HttpStatusCode code, string response)
     {
         var handler = new FakeHandler(code, response);
@@ -95,7 +96,8 @@ public class UnitTest1
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { "AWS:ApiGatewayBaseUrl", "https://fake-url" }
+                { "AWS:ApiGatewayBaseUrl", "https://fake-url" },
+                { "AWS:GamesApiGatewayBaseUrl", "https://fake-games-url" }
             })
             .Build();
 
@@ -104,6 +106,7 @@ public class UnitTest1
         return new ItemsController(service);
     }
 
+    // Helper class: Mocks HTTP responses
     class FakeHandler : HttpMessageHandler
     {
         private readonly HttpStatusCode _code;
