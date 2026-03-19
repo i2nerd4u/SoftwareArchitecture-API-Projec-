@@ -15,10 +15,18 @@ namespace GameReviews.Mobile
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddScoped(sp =>
+            {
+                var handler = new HttpClientHandler();
+
+                handler.ServerCertificateCustomValidationCallback =
+                    (message, cert, chain, errors) => true;
+
+                return new HttpClient(handler);
+            });
 
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
-            builder.Services.AddScoped(sp => new HttpClient());
+            builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
 #endif
 

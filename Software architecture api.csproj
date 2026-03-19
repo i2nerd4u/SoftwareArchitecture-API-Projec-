@@ -20,4 +20,12 @@
     <EmbeddedResource Remove="Architect.Tests\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="GameReviews.Mobile\**\*.cs" />
+    <Content Remove="GameReviews.Mobile\**" />
+    <EmbeddedResource Remove="GameReviews.Mobile\**" />
+    <None Remove="GameReviews.Mobile\**" />
+    <RazorComponent Remove="GameReviews.Mobile\**\*.razor" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,237 @@
 ﻿@page "/"
+@using System.Net.Http.Json
+@using GameReviews.Mobile.Models
+@inject HttpClient Http
 
-<h1>Hello, world!</h1>
+<div class="container py-4">
+    <h1 class="mb-4">Video Game Reviews</h1>
 
-Welcome to your new app.
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(successMessage))
+    {
+        <div class="alert alert-success">@successMessage</div>
+    }
+
+    <button class="btn btn-outline-primary mb-3" @onclick="LoadData">Retry Loading Data</button>
+
+    <div class="mb-4">
+        <button class="btn btn-primary me-2" @onclick="ShowReviews">Reviews</button>
+        <button class="btn btn-secondary" @onclick="ShowGames">Games</button>
+    </div>
+
+    @if (currentView == "reviews")
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Add Review</h2>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Author Name" @bind="newItem.FirstName" />
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Game Title" @bind="newItem.LastName" />
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Platform" @bind="platform" />
+                </div>
+
+                <div class="mb-3">
+                    <textarea class="form-control" placeholder="Your Review" @bind="newItem.FunFact"></textarea>
+                </div>
+
+                <button class="btn btn-success" @onclick="AddReview">Add Review</button>
+            </div>
+        </div>
+
+        <h2 class="h4 mb-3">Reviews</h2>
+
+        @foreach (var item in items)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3 class="h5 mb-1">@item.LastName</h3>
+                    <p class="text-muted mb-2">by @item.FirstName</p>
+                    <p class="mb-0">@item.FunFact</p>
+                </div>
+            </div>
+        }
+    }
+    else if (currentView == "games")
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Add Game</h2>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Title" @bind="newGame.Title" />
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Genre" @bind="newGame.Genre" />
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Developer" @bind="newGame.Developer" />
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Platform" @bind="newGame.Platform" />
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Release Year" @bind="newGame.ReleaseYear" />
+                </div>
+
+                <button class="btn btn-success" @onclick="AddGame">Add Game</button>
+            </div>
+        </div>
+
+        <h2 class="h4 mb-3">Games</h2>
+
+        @foreach (var game in games)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3 class="h5 mb-1">@game.Title</h3>
+                    <p class="mb-1">@game.Genre</p>
+                    <p class="text-muted mb-0">@game.Platform</p>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    string currentView = "reviews";
+
+    List<Item> items = new();
+    List<Game> games = new();
+
+    Item newItem = new();
+    Game newGame = new();
+
+    string platform = "";
+    string errorMessage = "";
+    string successMessage = "";
+
+    string ApiBaseUrl =>
+#if ANDROID
+    "https://10.0.2.2:7274";
+#elif IOS
+    "https://localhost:7274";
+#else
+    "https://localhost:7274";
+#endif
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(3000);
+
+        for (int i = 0; i < 5; i++)
+        {
+            await LoadData();
+
+            if (string.IsNullOrWhiteSpace(errorMessage))
+                return;
+
+            await Task.Delay(1500);
+        }
+    }
+
+    void ShowReviews() => currentView = "reviews";
+    void ShowGames() => currentView = "games";
+
+    async Task LoadData()
+    {
+        try
+        {
+            errorMessage = "";
+            successMessage = "";
+
+            var itemsUrl = $"{ApiBaseUrl}/api/items";
+            var gamesUrl = $"{ApiBaseUrl}/api/games";
+
+            Console.WriteLine($"Trying ITEMS URL: {itemsUrl}");
+            Console.WriteLine($"Trying GAMES URL: {gamesUrl}");
+
+            var itemsResponse = await Http.GetAsync(itemsUrl);
+            Console.WriteLine($"Items status: {(int)itemsResponse.StatusCode} {itemsResponse.StatusCode}");
+
+            var itemsRaw = await itemsResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"Items raw response: {itemsRaw}");
+
+            var gamesResponse = await Http.GetAsync(gamesUrl);
+            Console.WriteLine($"Games status: {(int)gamesResponse.StatusCode} {gamesResponse.StatusCode}");
+
+            var gamesRaw = await gamesResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"Games raw response: {gamesRaw}");
+
+            items = System.Text.Json.JsonSerializer.Deserialize<List<Item>>(itemsRaw) ?? new();
+            games = System.Text.Json.JsonSerializer.Deserialize<List<Game>>(gamesRaw) ?? new();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading data: {ex.GetType().Name} - {ex.Message}";
+            Console.WriteLine($"LOAD DATA ERROR FULL: {ex}");
+        }
+    }
+
+    async Task AddReview()
+    {
+        try
+        {
+            errorMessage = "";
+            successMessage = "";
+
+            var response = await Http.PostAsJsonAsync($"{ApiBaseUrl}/api/items", newItem);
+
+            if (response.IsSuccessStatusCode)
+            {
+                newItem = new Item();
+                platform = "";
+                successMessage = "Review added successfully.";
+                await LoadData();
+            }
+            else
+            {
+                errorMessage = $"Failed to add review: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error adding review: {ex.Message}";
+        }
+    }
+
+    async Task AddGame()
+    {
+        try
+        {
+            errorMessage = "";
+            successMessage = "";
+
+            var response = await Http.PostAsJsonAsync($"{ApiBaseUrl}/api/games", newGame);
+
+            if (response.IsSuccessStatusCode)
+            {
+                newGame = new Game();
+                successMessage = "Game added successfully.";
+                await LoadData();
+            }
+            else
+            {
+                errorMessage = $"Failed to add game: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error adding game: {ex.Message}";
+        }
+    }
+}
