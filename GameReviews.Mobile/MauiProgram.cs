@@ -18,7 +18,8 @@ namespace GameReviews.Mobile
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Services.AddScoped(sp => new HttpClient());
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
