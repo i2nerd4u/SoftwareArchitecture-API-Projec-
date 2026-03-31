@@ -22,7 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); disabled for testing
 app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllers();

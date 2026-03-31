@@ -3,117 +3,145 @@
 @using GameReviews.Mobile.Models
 @inject HttpClient Http
 
-<div class="container py-4">
-    <h1 class="mb-4">Video Game Reviews</h1>
+<div class="page-container">
+    <div class="page-header">
+        <h1>Video Game Reviews</h1>
+        <p>Tell others about your favourite video games!</p>
+    </div>
 
     @if (!string.IsNullOrWhiteSpace(errorMessage))
     {
-        <div class="alert alert-danger">@errorMessage</div>
+        <div class="error-message-custom">@errorMessage</div>
     }
 
     @if (!string.IsNullOrWhiteSpace(successMessage))
     {
-        <div class="alert alert-success">@successMessage</div>
+        <div class="success-message-custom">@successMessage</div>
     }
 
-    <button class="btn btn-outline-primary mb-3" @onclick="LoadData">Retry Loading Data</button>
+    <button class="refresh-btn-custom" @onclick="LoadData">Refresh Data</button>
 
-    <div class="mb-4">
-        <button class="btn btn-primary me-2" @onclick="ShowReviews">Reviews</button>
-        <button class="btn btn-secondary" @onclick="ShowGames">Games</button>
+    <div class="tab-bar">
+        <button class="tab-btn-custom @(currentView == "reviews" ? "active" : "")" @onclick='() => currentView = "reviews"'>
+            Reviews
+        </button>
+        <button class="tab-btn-custom @(currentView == "games" ? "active" : "")" @onclick='() => currentView = "games"'>
+            Games Database
+        </button>
     </div>
 
     @if (currentView == "reviews")
     {
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="h4 mb-3">Add Review</h2>
+        <div class="glass-card">
+            <h2 class="mb-4 text-center">Add a Review</h2>
 
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Author Name" @bind="newItem.FirstName" />
-                </div>
-
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Game Title" @bind="newItem.LastName" />
-                </div>
-
-                <div class="mb-3">
-                    <textarea class="form-control" placeholder="Your Review" @bind="newItem.FunFact"></textarea>
-                </div>
-
-                <button class="btn btn-success" @onclick="AddReview">Add Review</button>
+            <div class="form-group-custom">
+                <label>Author Name:</label>
+                <input class="form-input-custom" placeholder="Enter your name" @bind="newItem.FirstName" />
             </div>
+
+            <div class="form-group-custom">
+                <label>Game Title:</label>
+                <input class="form-input-custom" placeholder="Enter the game title" @bind="newItem.LastName" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Your Review:</label>
+                <textarea class="form-textarea-custom" rows="4" placeholder="Tell us your thoughts on this game" @bind="newItem.FunFact"></textarea>
+            </div>
+
+            <button class="submit-btn-custom" @onclick="AddReview">Add a Review!</button>
         </div>
 
-        <h2 class="h4 mb-3">Reviews</h2>
+        <div class="section-header">
+            <h2>Recent Video Game Reviews</h2>
+        </div>
 
-        @foreach (var item in items)
-        {
-            var matchingGame = FindMatchingGame(item);
-
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h3 class="h5 mb-1">@item.LastName</h3>
-                    <p class="text-muted mb-1">by @item.FirstName</p>
-
-                    @if (matchingGame is not null)
-                    {
-                        <p class="text-muted mb-2">Platform: @matchingGame.Platform</p>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-2">Platform: Not found</p>
-                    }
-
-                    <p class="mb-0">@item.FunFact</p>
+        <div class="card-grid">
+            @if (items.Count == 0)
+            {
+                <div class="review-card-custom">
+                    <div class="review-text">Be the first to share a review!</div>
                 </div>
-            </div>
-        }
+            }
+            else
+            {
+                @foreach (var item in items)
+                {
+                    var matchingGame = FindMatchingGame(item);
+
+                    <div class="review-card-custom">
+                        <div class="review-title">@item.LastName</div>
+                        <div class="review-author">by @item.FirstName</div>
+                        <div class="review-platform">
+                            Platform: @(matchingGame?.Platform ?? "Not found")
+                        </div>
+                        <div class="review-text">@item.FunFact</div>
+                    </div>
+                }
+            }
+        </div>
     }
-    else if (currentView == "games")
+    else
     {
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="h4 mb-3">Add Game</h2>
+        <div class="glass-card">
+            <h2 class="mb-4 text-center">Add New Game</h2>
 
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Title" @bind="newGame.Title" />
-                </div>
-
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Genre" @bind="newGame.Genre" />
-                </div>
-
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Developer" @bind="newGame.Developer" />
-                </div>
-
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Platform" @bind="newGame.Platform" />
-                </div>
-
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Release Year" @bind="newGame.ReleaseYear" />
-                </div>
-
-                <button class="btn btn-success" @onclick="AddGame">Add Game</button>
+            <div class="form-group-custom">
+                <label>Game Title:</label>
+                <input class="form-input-custom" placeholder="Enter game title" @bind="newGame.Title" />
             </div>
+
+            <div class="form-group-custom">
+                <label>Genre:</label>
+                <input class="form-input-custom" placeholder="e.g., Action, RPG, Puzzle" @bind="newGame.Genre" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Developer:</label>
+                <input class="form-input-custom" placeholder="Game developer" @bind="newGame.Developer" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Platform:</label>
+                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC" @bind="newGame.Platform" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Release Year:</label>
+                <input class="form-input-custom" placeholder="2024" @bind="newGame.ReleaseYear" />
+            </div>
+
+            <button class="submit-btn-custom" @onclick="AddGame">Add Game</button>
         </div>
 
-        <h2 class="h4 mb-3">Games</h2>
+        <div class="section-header">
+            <h2>Games Database</h2>
+        </div>
 
-        @foreach (var game in games)
-        {
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h3 class="h5 mb-1">@game.Title</h3>
-                    <p class="mb-1">@game.Genre</p>
-                    <p class="text-muted mb-1">@game.Developer</p>
-                    <p class="text-muted mb-1">Platform: @game.Platform</p>
-                    <p class="text-muted mb-0">Release Year: @game.ReleaseYear</p>
+        <div class="card-grid">
+            @if (games.Count == 0)
+            {
+                <div class="review-card-custom">
+                    <div class="review-text">No games yet. Add the first one!</div>
                 </div>
-            </div>
-        }
+            }
+            else
+            {
+                @foreach (var game in games)
+                {
+                    <div class="review-card-custom">
+                        <div class="review-title">@game.Title</div>
+                        <div class="review-author">Genre: @game.Genre</div>
+                        <div class="review-text">
+                            Developer: @game.Developer<br/>
+                            Platform: @game.Platform<br/>
+                            Released: @game.ReleaseYear
+                        </div>
+                    </div>
+                }
+            }
+        </div>
     }
 </div>
 
@@ -131,68 +159,40 @@
 
     string ApiBaseUrl =>
 #if ANDROID
-    "https://10.0.2.2:7274";
-#elif IOS
-    "https://localhost:7274";
+        "https://10.0.2.2:7274";
 #else
-    "https://localhost:7274";
+        "https://localhost:7274";
 #endif
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    void ClearMessages()
+    {
+        errorMessage = "";
+        successMessage = "";
+    }
 
     Game? FindMatchingGame(Item item)
     {
         return games.FirstOrDefault(g =>
-            string.Equals(
-                g.Title?.Trim(),
-                item.LastName?.Trim(),
-                StringComparison.OrdinalIgnoreCase));
+            string.Equals(g.Title?.Trim(), item.LastName?.Trim(), StringComparison.OrdinalIgnoreCase));
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(3000);
-
-        for (int i = 0; i < 5; i++)
-        {
-            await LoadData();
-
-            if (string.IsNullOrWhiteSpace(errorMessage))
-                return;
-
-            await Task.Delay(1500);
-        }
-    }
-
-    void ShowReviews() => currentView = "reviews";
-    void ShowGames() => currentView = "games";
-
-    readonly System.Text.Json.JsonSerializerOptions jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
 
     async Task LoadData()
     {
         try
         {
-            errorMessage = "";
-            successMessage = "";
+            ClearMessages();
 
-            var itemsUrl = $"{ApiBaseUrl}/api/items";
-            var gamesUrl = $"{ApiBaseUrl}/api/games";
-
-            var itemsResponse = await Http.GetAsync(itemsUrl);
-            var itemsRaw = await itemsResponse.Content.ReadAsStringAsync();
-
-            var gamesResponse = await Http.GetAsync(gamesUrl);
-            var gamesRaw = await gamesResponse.Content.ReadAsStringAsync();
-
-            items = System.Text.Json.JsonSerializer.Deserialize<List<Item>>(itemsRaw, jsonOptions) ?? new();
-            games = System.Text.Json.JsonSerializer.Deserialize<List<Game>>(gamesRaw, jsonOptions) ?? new();
+            items = await Http.GetFromJsonAsync<List<Item>>($"{ApiBaseUrl}/api/items") ?? new();
+            games = await Http.GetFromJsonAsync<List<Game>>($"{ApiBaseUrl}/api/games") ?? new();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error loading data: {ex.GetType().Name} - {ex.Message}";
-            Console.WriteLine($"LOAD DATA ERROR FULL: {ex}");
+            errorMessage = $"Error loading data: {ex.Message}";
         }
     }
 
@@ -200,22 +200,19 @@
     {
         try
         {
-            errorMessage = "";
-            successMessage = "";
+            ClearMessages();
 
             var response = await Http.PostAsJsonAsync($"{ApiBaseUrl}/api/items", newItem);
 
-            if (response.IsSuccessStatusCode)
-            {
-                newItem = new Item();
-                successMessage = "Review added successfully.";
-                await LoadData();
-            }
-            else
+            if (!response.IsSuccessStatusCode)
             {
                 errorMessage = $"Failed to add review: {response.StatusCode}";
+                return;
             }
 
+            newItem = new Item();
+            successMessage = "Your review has been added successfully!";
+            await LoadData();
         }
         catch (Exception ex)
         {
@@ -227,21 +224,19 @@
     {
         try
         {
-            errorMessage = "";
-            successMessage = "";
+            ClearMessages();
 
             var response = await Http.PostAsJsonAsync($"{ApiBaseUrl}/api/games", newGame);
 
-            if (response.IsSuccessStatusCode)
-            {
-                newGame = new Game();
-                successMessage = "Game added successfully.";
-                await LoadData();
-            }
-            else
+            if (!response.IsSuccessStatusCode)
             {
                 errorMessage = $"Failed to add game: {response.StatusCode}";
+                return;
             }
+
+            newGame = new Game();
+            successMessage = "Game added successfully!";
+            await LoadData();
         }
         catch (Exception ex)
         {
