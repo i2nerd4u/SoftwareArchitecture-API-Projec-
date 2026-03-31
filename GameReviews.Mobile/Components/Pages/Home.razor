@@ -38,10 +38,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <input class="form-control" placeholder="Platform" @bind="platform" />
-                </div>
-
-                <div class="mb-3">
                     <textarea class="form-control" placeholder="Your Review" @bind="newItem.FunFact"></textarea>
                 </div>
 
@@ -53,10 +49,22 @@
 
         @foreach (var item in items)
         {
+            var matchingGame = FindMatchingGame(item);
+
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="h5 mb-1">@item.LastName</h3>
-                    <p class="text-muted mb-2">by @item.FirstName</p>
+                    <p class="text-muted mb-1">by @item.FirstName</p>
+
+                    @if (matchingGame is not null)
+                    {
+                        <p class="text-muted mb-2">Platform: @matchingGame.Platform</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-2">Platform: Not found</p>
+                    }
+
                     <p class="mb-0">@item.FunFact</p>
                 </div>
             </div>
@@ -100,7 +108,9 @@
                 <div class="card-body">
                     <h3 class="h5 mb-1">@game.Title</h3>
                     <p class="mb-1">@game.Genre</p>
-                    <p class="text-muted mb-0">@game.Platform</p>
+                    <p class="text-muted mb-1">@game.Developer</p>
+                    <p class="text-muted mb-1">Platform: @game.Platform</p>
+                    <p class="text-muted mb-0">Release Year: @game.ReleaseYear</p>
                 </div>
             </div>
         }
@@ -116,7 +126,6 @@
     Item newItem = new();
     Game newGame = new();
 
-    string platform = "";
     string errorMessage = "";
     string successMessage = "";
 
@@ -128,6 +137,15 @@
 #else
     "https://localhost:7274";
 #endif
+
+    Game? FindMatchingGame(Item item)
+    {
+        return games.FirstOrDefault(g =>
+            string.Equals(
+                g.Title?.Trim(),
+                item.LastName?.Trim(),
+                StringComparison.OrdinalIgnoreCase));
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -147,6 +165,11 @@
     void ShowReviews() => currentView = "reviews";
     void ShowGames() => currentView = "games";
 
+    readonly System.Text.Json.JsonSerializerOptions jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     async Task LoadData()
     {
         try
@@ -157,23 +180,14 @@
             var itemsUrl = $"{ApiBaseUrl}/api/items";
             var gamesUrl = $"{ApiBaseUrl}/api/games";
 
-            Console.WriteLine($"Trying ITEMS URL: {itemsUrl}");
-            Console.WriteLine($"Trying GAMES URL: {gamesUrl}");
-
             var itemsResponse = await Http.GetAsync(itemsUrl);
-            Console.WriteLine($"Items status: {(int)itemsResponse.StatusCode} {itemsResponse.StatusCode}");
-
             var itemsRaw = await itemsResponse.Content.ReadAsStringAsync();
-            Console.WriteLine($"Items raw response: {itemsRaw}");
 
             var gamesResponse = await Http.GetAsync(gamesUrl);
-            Console.WriteLine($"Games status: {(int)gamesResponse.StatusCode} {gamesResponse.StatusCode}");
-
             var gamesRaw = await gamesResponse.Content.ReadAsStringAsync();
-            Console.WriteLine($"Games raw response: {gamesRaw}");
 
-            items = System.Text.Json.JsonSerializer.Deserialize<List<Item>>(itemsRaw) ?? new();
-            games = System.Text.Json.JsonSerializer.Deserialize<List<Game>>(gamesRaw) ?? new();
+            items = System.Text.Json.JsonSerializer.Deserialize<List<Item>>(itemsRaw, jsonOptions) ?? new();
+            games = System.Text.Json.JsonSerializer.Deserialize<List<Game>>(gamesRaw, jsonOptions) ?? new();
         }
         catch (Exception ex)
         {
@@ -194,7 +208,6 @@
             if (response.IsSuccessStatusCode)
             {
                 newItem = new Item();
-                platform = "";
                 successMessage = "Review added successfully.";
                 await LoadData();
             }
@@ -202,6 +215,7 @@
             {
                 errorMessage = $"Failed to add review: {response.StatusCode}";
             }
+
         }
         catch (Exception ex)
         {
