@@ -1,0 +1,246 @@
+﻿@page "/"
+@using System.Net.Http.Json
+@using GameReviews.Mobile.Models
+@inject HttpClient Http
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>Video Game Reviews</h1>
+        <p>Tell others about your favourite video games!</p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="error-message-custom">@errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(successMessage))
+    {
+        <div class="success-message-custom">@successMessage</div>
+    }
+
+    <button class="refresh-btn-custom" @onclick="LoadData">Refresh Data</button>
+
+    <div class="tab-bar">
+        <button class="tab-btn-custom @(currentView == "reviews" ? "active" : "")" @onclick='() => currentView = "reviews"'>
+            Reviews
+        </button>
+        <button class="tab-btn-custom @(currentView == "games" ? "active" : "")" @onclick='() => currentView = "games"'>
+            Games Database
+        </button>
+    </div>
+
+    @if (currentView == "reviews")
+    {
+        <div class="glass-card">
+            <h2 class="mb-4 text-center">Add a Review</h2>
+
+            <div class="form-group-custom">
+                <label>Author Name:</label>
+                <input class="form-input-custom" placeholder="Enter your name" @bind="newItem.FirstName" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Game Title:</label>
+                <input class="form-input-custom" placeholder="Enter the game title" @bind="newItem.LastName" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Your Review:</label>
+                <textarea class="form-textarea-custom" rows="4" placeholder="Tell us your thoughts on this game" @bind="newItem.FunFact"></textarea>
+            </div>
+
+            <button class="submit-btn-custom" @onclick="AddReview">Add a Review!</button>
+        </div>
+
+        <div class="section-header">
+            <h2>Recent Video Game Reviews</h2>
+        </div>
+
+        <div class="card-grid">
+            @if (items.Count == 0)
+            {
+                <div class="review-card-custom">
+                    <div class="review-text">Be the first to share a review!</div>
+                </div>
+            }
+            else
+            {
+                @foreach (var item in items)
+                {
+                    var matchingGame = FindMatchingGame(item);
+
+                    <div class="review-card-custom">
+                        <div class="review-title">@item.LastName</div>
+                        <div class="review-author">by @item.FirstName</div>
+                        <div class="review-platform">
+                            Platform: @(matchingGame?.Platform ?? "Not found")
+                        </div>
+                        <div class="review-text">@item.FunFact</div>
+                    </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <div class="glass-card">
+            <h2 class="mb-4 text-center">Add New Game</h2>
+
+            <div class="form-group-custom">
+                <label>Game Title:</label>
+                <input class="form-input-custom" placeholder="Enter game title" @bind="newGame.Title" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Genre:</label>
+                <input class="form-input-custom" placeholder="e.g., Action, RPG, Puzzle" @bind="newGame.Genre" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Developer:</label>
+                <input class="form-input-custom" placeholder="Game developer" @bind="newGame.Developer" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Platform:</label>
+                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC" @bind="newGame.Platform" />
+            </div>
+
+            <div class="form-group-custom">
+                <label>Release Year:</label>
+                <input class="form-input-custom" placeholder="2024" @bind="newGame.ReleaseYear" />
+            </div>
+
+            <button class="submit-btn-custom" @onclick="AddGame">Add Game</button>
+        </div>
+
+        <div class="section-header">
+            <h2>Games Database</h2>
+        </div>
+
+        <div class="card-grid">
+            @if (games.Count == 0)
+            {
+                <div class="review-card-custom">
+                    <div class="review-text">No games yet. Add the first one!</div>
+                </div>
+            }
+            else
+            {
+                @foreach (var game in games)
+                {
+                    <div class="review-card-custom">
+                        <div class="review-title">@game.Title</div>
+                        <div class="review-author">Genre: @game.Genre</div>
+                        <div class="review-text">
+                            Developer: @game.Developer<br/>
+                            Platform: @game.Platform<br/>
+                            Released: @game.ReleaseYear
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+@code {
+    string currentView = "reviews";
+
+    List<Item> items = new();
+    List<Game> games = new();
+
+    Item newItem = new();
+    Game newGame = new();
+
+    string errorMessage = "";
+    string successMessage = "";
+
+    string ApiBaseUrl =>
+#if ANDROID
+        "https://10.0.2.2:7274";
+#else
+        "https://localhost:7274";
+#endif
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    void ClearMessages()
+    {
+        errorMessage = "";
+        successMessage = "";
+    }
+
+    Game? FindMatchingGame(Item item)
+    {
+        return games.FirstOrDefault(g =>
+            string.Equals(g.Title?.Trim(), item.LastName?.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
+    async Task LoadData()
+    {
+        try
+        {
+            ClearMessages();
+
+            items = await Http.GetFromJsonAsync<List<Item>>($"{ApiBaseUrl}/api/items") ?? new();
+            games = await Http.GetFromJsonAsync<List<Game>>($"{ApiBaseUrl}/api/games") ?? new();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading data: {ex.Message}";
+        }
+    }
+
+    async Task AddReview()
+    {
+        try
+        {
+            ClearMessages();
+
+            var response = await Http.PostAsJsonAsync($"{ApiBaseUrl}/api/items", newItem);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage = $"Failed to add review: {response.StatusCode}";
+                return;
+            }
+
+            newItem = new Item();
+            successMessage = "Your review has been added successfully!";
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error adding review: {ex.Message}";
+        }
+    }
+
+    async Task AddGame()
+    {
+        try
+        {
+            ClearMessages();
+
+            var response = await Http.PostAsJsonAsync($"{ApiBaseUrl}/api/games", newGame);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage = $"Failed to add game: {response.StatusCode}";
+                return;
+            }
+
+            newGame = new Game();
+            successMessage = "Game added successfully!";
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error adding game: {ex.Message}";
+        }
+    }
+}
