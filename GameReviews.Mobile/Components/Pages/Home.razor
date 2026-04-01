@@ -82,6 +82,7 @@
                             Platform: @(string.IsNullOrEmpty(item.Platform) ? "Not specified" : item.Platform)
                         </div>
                         <div class="review-text">@item.FunFact</div>
+                        <div class="review-date">@(item.CreatedAt != default ? item.CreatedAt.ToString("MMM dd, yyyy h:mm tt") : "")</div>
                     </div>
                 }
             }
