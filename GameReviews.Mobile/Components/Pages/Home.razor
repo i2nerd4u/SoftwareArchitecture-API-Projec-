@@ -159,9 +159,9 @@
 
     string ApiBaseUrl =>
 #if ANDROID
-        "https://10.0.2.2:7274";
+        "http://10.0.2.2:5084";
 #else
-        "https://localhost:7274";
+        "http://localhost:5084";
 #endif
 
     protected override async Task OnInitializedAsync()
