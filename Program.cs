@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 // Add AWS services
 builder.Services.AddAWSService<IAmazonDynamoDB>();
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection(); disabled for testing
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllers();
