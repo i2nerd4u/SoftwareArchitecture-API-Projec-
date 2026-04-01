@@ -6,5 +6,6 @@ public class Item
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string FunFact { get; set; } = string.Empty;
+    public string Platform { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

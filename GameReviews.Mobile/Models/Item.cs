@@ -10,6 +10,7 @@ namespace GameReviews.Mobile.Models
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
         public string FunFact { get; set; } = "";
+        public string Platform { get; set; } = "";
         public DateTime CreatedAt { get; set; }
     }
 }
