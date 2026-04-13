@@ -1,5 +1,7 @@
 using Amazon.DynamoDBv2;
+using Microsoft.EntityFrameworkCore;
 using Software_architecture_api.Services;
+using Software_architecture_api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
-// Add AWS services
+// EF Core
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Keep AWS (for now)
 builder.Services.AddAWSService<IAmazonDynamoDB>();
 builder.Services.AddHttpClient<AwsApiService>();
 builder.Services.AddScoped<AwsApiService>();

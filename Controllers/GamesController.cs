@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Software_architecture_api.Data;
 using Software_architecture_api.Models;
-using Software_architecture_api.Services;
 
 namespace Software_architecture_api.Controllers;
 
@@ -8,11 +9,11 @@ namespace Software_architecture_api.Controllers;
 [Route("api/[controller]")]
 public class GamesController : ControllerBase
 {
-    private readonly AwsApiService _awsApiService;
+    private readonly AppDbContext _context;
 
-    public GamesController(AwsApiService awsApiService)
+    public GamesController(AppDbContext context)
     {
-        _awsApiService = awsApiService;
+        _context = context;
     }
 
     [HttpGet]
@@ -20,7 +21,10 @@ public class GamesController : ControllerBase
     {
         try
         {
-            var games = await _awsApiService.GetGamesAsync();
+            var games = await _context.Games
+                .OrderBy(x => x.Title)
+                .ToListAsync();
+
             return Ok(games);
         }
         catch (Exception ex)
@@ -34,11 +38,15 @@ public class GamesController : ControllerBase
     {
         try
         {
-            if (string.IsNullOrEmpty(game.Id))
+            if (string.IsNullOrWhiteSpace(game.Id))
                 game.Id = Guid.NewGuid().ToString();
 
-            var createdGame = await _awsApiService.CreateGameAsync(game);
-            return CreatedAtAction(nameof(GetGames), new { id = createdGame.Id }, createdGame);
+            game.CreatedAt = DateTime.UtcNow;
+
+            _context.Games.Add(game);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetGames), new { id = game.Id }, game);
         }
         catch (Exception ex)
         {
