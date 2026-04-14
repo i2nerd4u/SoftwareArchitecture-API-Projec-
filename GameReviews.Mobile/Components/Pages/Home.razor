@@ -55,6 +55,11 @@
                 <textarea class="form-textarea-custom" rows="4" placeholder="Tell us your thoughts on this game" @bind="newItem.FunFact"></textarea>
             </div>
 
+            <div class="form-group-custom">
+                <label>Platform:</label>
+                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC, Mobile" @bind="newItem.Platform" />
+            </div>
+
             <button class="submit-btn-custom" @onclick="AddReview">Add a Review!</button>
         </div>
 
