@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Software_architecture_api.Data;
 using Software_architecture_api.Models;
-using Software_architecture_api.Services;
 
 namespace Software_architecture_api.Controllers;
 
@@ -8,11 +9,11 @@ namespace Software_architecture_api.Controllers;
 [Route("api/[controller]")]
 public class ItemsController : ControllerBase
 {
-    private readonly AwsApiService _awsApiService;
+    private readonly AppDbContext _context;
 
-    public ItemsController(AwsApiService awsApiService)
+    public ItemsController(AppDbContext context)
     {
-        _awsApiService = awsApiService;
+        _context = context;
     }
 
     [HttpGet]
@@ -20,7 +21,10 @@ public class ItemsController : ControllerBase
     {
         try
         {
-            var items = await _awsApiService.GetItemsAsync();
+            var items = await _context.Items
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+
             return Ok(items);
         }
         catch (Exception ex)
@@ -34,11 +38,15 @@ public class ItemsController : ControllerBase
     {
         try
         {
-            if (string.IsNullOrEmpty(item.Id))
+            if (string.IsNullOrWhiteSpace(item.Id))
                 item.Id = Guid.NewGuid().ToString();
 
-            var createdItem = await _awsApiService.CreateItemAsync(item);
-            return CreatedAtAction(nameof(GetItems), new { id = createdItem.Id }, createdItem);
+            item.CreatedAt = DateTime.UtcNow;
+
+            _context.Items.Add(item);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetItems), new { id = item.Id }, item);
         }
         catch (Exception ex)
         {
