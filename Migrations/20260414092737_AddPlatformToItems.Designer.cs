@@ -12,8 +12,8 @@ using Software_architecture_api.Data;
 namespace Software_architecture_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260413141946_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260414092737_AddPlatformToItems")]
+    partial class AddPlatformToItems
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,10 @@ namespace Software_architecture_api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Platform")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
