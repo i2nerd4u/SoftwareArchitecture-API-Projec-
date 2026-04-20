@@ -1,0 +1,52 @@
+name: API CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore API dependencies
+        run: dotnet restore "Software architecture api.csproj"
+
+      - name: Build API
+        run: dotnet build "Software architecture api.csproj" --configuration Release --no-restore
+
+      - name: Restore Test dependencies
+        run: dotnet restore "Architect.Tests/Architect.Tests.csproj"
+
+      - name: Build Tests
+        run: dotnet build "Architect.Tests/Architect.Tests.csproj" --configuration Release --no-restore
+
+      - name: Run Tests
+        run: dotnet test "Architect.Tests/Architect.Tests.csproj" --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: "**/test-results.trx"
+
+      - name: Publish API
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: dotnet publish "Software architecture api.csproj" --configuration Release --output ./publish
+
+      - name: Upload Build Artifact
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-publish
+          path: ./publish
