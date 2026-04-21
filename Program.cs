@@ -22,12 +22,11 @@ builder.Services.AddScoped<AwsApiService>();
 
 var app = builder.Build();
 
-// Auto-apply migrations on startup (skip if using InMemory for tests)
+// Auto-apply migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (!db.Database.IsInMemory())
-        db.Database.Migrate();
+    try { db.Database.Migrate(); } catch { }
 }
 
 // Configure the HTTP request pipeline.
