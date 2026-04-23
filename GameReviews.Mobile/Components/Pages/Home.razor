@@ -55,6 +55,11 @@
                 <textarea class="form-textarea-custom" rows="4" placeholder="Tell us your thoughts on this game" @bind="newItem.FunFact"></textarea>
             </div>
 
+            <div class="form-group-custom">
+                <label>Platform:</label>
+                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC, Mobile" @bind="newItem.Platform" />
+            </div>
+
             <button class="submit-btn-custom" @onclick="AddReview">Add a Review!</button>
         </div>
 
@@ -82,6 +87,7 @@
                             Played on: @(string.IsNullOrWhiteSpace(item.Platform) ? "Not specified" : item.Platform)
                         </div>
                         <div class="review-text">@item.FunFact</div>
+                        <div class="review-date">@(item.CreatedAt != default ? item.CreatedAt.ToString("MMM dd, yyyy h:mm tt") : "")</div>
                         <div class="review-date">@item.CreatedAt.ToString("MMMM d, yyyy 'at' hh:mm tt")</div>
                     </div>
                 }
@@ -189,17 +195,23 @@
 
     async Task LoadData()
     {
-        try
-        {
-            ClearMessages();
+        ClearMessages();
 
-            items = await Http.GetFromJsonAsync<List<Item>>($"{ApiBaseUrl}/api/items") ?? new();
-            games = await Http.GetFromJsonAsync<List<Game>>($"{ApiBaseUrl}/api/games") ?? new();
-        }
-        catch (Exception ex)
+        for (int i = 0; i < 3; i++)
         {
-            errorMessage = $"Error loading data: {ex.Message}";
+            try
+            {
+                items = await Http.GetFromJsonAsync<List<Item>>($"{ApiBaseUrl}/api/items") ?? new();
+                games = await Http.GetFromJsonAsync<List<Game>>($"{ApiBaseUrl}/api/games") ?? new();
+                return;
+            }
+            catch
+            {
+                await Task.Delay(1000);
+            }
         }
+
+        errorMessage = "Could not connect to the server. Please refresh.";
     }
 
     async Task AddReview()

@@ -1,129 +1,180 @@
-﻿using Xunit;
-using System.Net;
-using System.Text;
+using Xunit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Software_architecture_api.Controllers;
+using Software_architecture_api.Data;
 using Software_architecture_api.Models;
-using Software_architecture_api.Services;
 
 namespace Architect.Tests;
 
 public class UnitTest1
 {
-    // Test 1: Check that items are returned correctly
-    [Fact]
-    public async Task GetItems_ReturnsItems()
+    private AppDbContext CreateDb()
     {
-        string json = """
-        {
-          "body": "[{\"id\":\"1\",\"firstName\":\"John\",\"lastName\":\"Halo\",\"funFact\":\"Great game\"}]"
-        }
-        """;
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        return new AppDbContext(options);
+    }
 
-        var controller = CreateController(HttpStatusCode.OK, json);
+    // --- Items Tests ---
 
+    // Test 1: GET /api/items returns all items
+    [Fact]
+    public async Task GetItems_ReturnsAllItems()
+    {
+        using var db = CreateDb();
+        db.Items.Add(new Item { Id = "1", FirstName = "Karl", LastName = "Halo", FunFact = "Great game", Platform = "Xbox" });
+        db.Items.Add(new Item { Id = "2", FirstName = "Ethan", LastName = "Minecraft", FunFact = "Fun game", Platform = "PC" });
+        await db.SaveChangesAsync();
+
+        var controller = new ItemsController(db);
         var result = await controller.GetItems();
 
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var items = Assert.IsType<List<Item>>(ok.Value);
-
-        Assert.Equal("John", items[0].FirstName);
+        Assert.Equal(2, items.Count);
     }
 
-    // Test 2: Check that an empty list is returned correctly
+    // Test 2: GET /api/items returns empty list when no items exist
     [Fact]
     public async Task GetItems_ReturnsEmptyList()
     {
-        string json = """{ "body": "[]" }""";
-
-        var controller = CreateController(HttpStatusCode.OK, json);
+        using var db = CreateDb();
+        var controller = new ItemsController(db);
 
         var result = await controller.GetItems();
 
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var items = Assert.IsType<List<Item>>(ok.Value);
-
         Assert.Empty(items);
     }
 
-    // Test 3: Check that creating an item returns the created item
+    // Test 3: POST /api/items creates a new review
     [Fact]
-    public async Task CreateItem_ReturnsItem()
+    public async Task CreateItem_AddsReviewToDatabase()
     {
-        string json = """
-        {
-          "body": "{\"id\":\"123\",\"firstName\":\"Alice\",\"lastName\":\"Minecraft\",\"funFact\":\"Great game\"}"
-        }
-        """;
+        using var db = CreateDb();
+        var controller = new ItemsController(db);
 
-        var controller = CreateController(HttpStatusCode.OK, json);
-
-        var item = new Item
-        {
-            FirstName = "Alice",
-            LastName = "Minecraft",
-            FunFact = "Great game"
-        };
-
-        var result = await controller.CreateItem(item);
+        var newItem = new Item { FirstName = "Karl", LastName = "Zelda", FunFact = "Amazing", Platform = "Switch" };
+        var result = await controller.CreateItem(newItem);
 
         var created = Assert.IsType<CreatedAtActionResult>(result.Result);
-        var returnedItem = Assert.IsType<Item>(created.Value);
-
-        Assert.Equal("Alice", returnedItem.FirstName);
+        var returned = Assert.IsType<Item>(created.Value);
+        Assert.Equal("Karl", returned.FirstName);
+        Assert.Equal(1, db.Items.Count());
     }
 
-    // Test 4: Check that the controller handles errors correctly
+    // Test 4: POST /api/items auto-assigns an Id if none provided
     [Fact]
-    public async Task GetItems_ReturnsError()
+    public async Task CreateItem_AssignsIdIfMissing()
     {
-        var controller = CreateController(HttpStatusCode.InternalServerError, "error");
+        using var db = CreateDb();
+        var controller = new ItemsController(db);
 
+        var result = await controller.CreateItem(new Item { FirstName = "Test", LastName = "Game" });
+
+        var created = Assert.IsType<CreatedAtActionResult>(result.Result);
+        var returned = Assert.IsType<Item>(created.Value);
+        Assert.False(string.IsNullOrWhiteSpace(returned.Id));
+    }
+
+    // Test 5: GET /api/items returns items ordered by newest first
+    [Fact]
+    public async Task GetItems_ReturnsMostRecentFirst()
+    {
+        using var db = CreateDb();
+        db.Items.Add(new Item { Id = "1", FirstName = "Old", CreatedAt = DateTime.UtcNow.AddDays(-2) });
+        db.Items.Add(new Item { Id = "2", FirstName = "New", CreatedAt = DateTime.UtcNow });
+        await db.SaveChangesAsync();
+
+        var controller = new ItemsController(db);
         var result = await controller.GetItems();
 
-        var error = Assert.IsType<ObjectResult>(result.Result);
-
-        Assert.Equal(500, error.StatusCode);
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var items = Assert.IsType<List<Item>>(ok.Value);
+        Assert.Equal("New", items[0].FirstName);
     }
 
-    // Helper method: Creates controller with fake HTTP response
-    private ItemsController CreateController(HttpStatusCode code, string response)
+    // --- Games Tests ---
+
+    // Test 6: GET /api/games returns all games
+    [Fact]
+    public async Task GetGames_ReturnsAllGames()
     {
-        var handler = new FakeHandler(code, response);
-        var httpClient = new HttpClient(handler);
+        using var db = CreateDb();
+        db.Games.Add(new Game { Id = "1", Title = "Halo", Genre = "FPS", Developer = "Bungie", Platform = "Xbox", ReleaseYear = "2001" });
+        db.Games.Add(new Game { Id = "2", Title = "Zelda", Genre = "Adventure", Developer = "Nintendo", Platform = "Switch", ReleaseYear = "2017" });
+        await db.SaveChangesAsync();
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { "AWS:ApiGatewayBaseUrl", "https://fake-url" },
-                { "AWS:GamesApiGatewayBaseUrl", "https://fake-games-url" }
-            })
-            .Build();
+        var controller = new GamesController(db);
+        var result = await controller.GetGames();
 
-        var service = new AwsApiService(httpClient, config);
-
-        return new ItemsController(service);
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var games = Assert.IsType<List<Game>>(ok.Value);
+        Assert.Equal(2, games.Count);
     }
 
-    // Helper class: Mocks HTTP responses
-    class FakeHandler : HttpMessageHandler
+    // Test 7: GET /api/games returns empty list when no games exist
+    [Fact]
+    public async Task GetGames_ReturnsEmptyList()
     {
-        private readonly HttpStatusCode _code;
-        private readonly string _response;
+        using var db = CreateDb();
+        var controller = new GamesController(db);
 
-        public FakeHandler(HttpStatusCode code, string response)
-        {
-            _code = code;
-            _response = response;
-        }
+        var result = await controller.GetGames();
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
-        {
-            var message = new HttpResponseMessage(_code);
-            message.Content = new StringContent(_response, Encoding.UTF8, "application/json");
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var games = Assert.IsType<List<Game>>(ok.Value);
+        Assert.Empty(games);
+    }
 
-            return Task.FromResult(message);
-        }
+    // Test 8: POST /api/games creates a new game
+    [Fact]
+    public async Task CreateGame_AddsGameToDatabase()
+    {
+        using var db = CreateDb();
+        var controller = new GamesController(db);
+
+        var newGame = new Game { Title = "Minecraft", Genre = "Sandbox", Developer = "Mojang", Platform = "PC", ReleaseYear = "2011" };
+        var result = await controller.CreateGame(newGame);
+
+        var created = Assert.IsType<CreatedAtActionResult>(result.Result);
+        var returned = Assert.IsType<Game>(created.Value);
+        Assert.Equal("Minecraft", returned.Title);
+        Assert.Equal(1, db.Games.Count());
+    }
+
+    // Test 9: POST /api/games auto-assigns an Id if none provided
+    [Fact]
+    public async Task CreateGame_AssignsIdIfMissing()
+    {
+        using var db = CreateDb();
+        var controller = new GamesController(db);
+
+        var result = await controller.CreateGame(new Game { Title = "TestGame" });
+
+        var created = Assert.IsType<CreatedAtActionResult>(result.Result);
+        var returned = Assert.IsType<Game>(created.Value);
+        Assert.False(string.IsNullOrWhiteSpace(returned.Id));
+    }
+
+    // Test 10: GET /api/games returns games ordered alphabetically by title
+    [Fact]
+    public async Task GetGames_ReturnsGamesAlphabetically()
+    {
+        using var db = CreateDb();
+        db.Games.Add(new Game { Id = "1", Title = "Zelda" });
+        db.Games.Add(new Game { Id = "2", Title = "Halo" });
+        await db.SaveChangesAsync();
+
+        var controller = new GamesController(db);
+        var result = await controller.GetGames();
+
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var games = Assert.IsType<List<Game>>(ok.Value);
+        Assert.Equal("Halo", games[0].Title);
+        Assert.Equal("Zelda", games[1].Title);
     }
 }
