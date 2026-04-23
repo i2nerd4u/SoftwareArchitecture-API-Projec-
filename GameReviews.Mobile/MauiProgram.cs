@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 namespace GameReviews.Mobile
 {
@@ -29,6 +31,10 @@ namespace GameReviews.Mobile
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
 #endif
+
+            var culture = new CultureInfo("ga-IE");
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
 
             return builder.Build();
         }
