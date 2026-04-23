@@ -1,12 +1,13 @@
 ﻿@page "/"
 @using System.Net.Http.Json
 @using GameReviews.Mobile.Models
+@using GameReviews.Mobile.Resources.Localization
 @inject HttpClient Http
 
 <div class="page-container">
     <div class="page-header">
-        <h1>Video Game Reviews</h1>
-        <p>Tell others about your favourite video games!</p>
+        <h1>@AppResources.Title</h1>
+        <p>@AppResources.Subtitle</p>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(errorMessage))
@@ -19,75 +20,67 @@
         <div class="success-message-custom">@successMessage</div>
     }
 
-    <button class="refresh-btn-custom" @onclick="LoadData">Refresh Data</button>
+    <button class="refresh-btn-custom" @onclick="LoadData">@AppResources.RefreshData</button>
 
     <div class="tab-bar">
         <button class="tab-btn-custom @(currentView == "reviews" ? "active" : "")" @onclick='() => currentView = "reviews"'>
-            Reviews
+            @AppResources.Reviews
         </button>
         <button class="tab-btn-custom @(currentView == "games" ? "active" : "")" @onclick='() => currentView = "games"'>
-            Games Database
+            @AppResources.GamesDatabase
         </button>
     </div>
 
     @if (currentView == "reviews")
     {
         <div class="glass-card">
-            <h2 class="mb-4 text-center">Add a Review</h2>
+            <h2 class="mb-4 text-center">@AppResources.AddReviewHeading</h2>
 
             <div class="form-group-custom">
-                <label>Author Name:</label>
-                <input class="form-input-custom" placeholder="Enter your name" @bind="newItem.FirstName" />
+                <label>@AppResources.AuthorName:</label>
+                <input class="form-input-custom" placeholder="@AppResources.AuthorNamePlaceholder" @bind="newItem.FirstName" />
             </div>
 
             <div class="form-group-custom">
-                <label>Game Title:</label>
-                <input class="form-input-custom" placeholder="Enter the game title" @bind="newItem.LastName" />
+                <label>@AppResources.GameTitle:</label>
+                <input class="form-input-custom" placeholder="@AppResources.GameTitlePlaceholder" @bind="newItem.LastName" />
             </div>
 
             <div class="form-group-custom">
-                <label>Platform Played On:</label>
-                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC, Mobile" @bind="newItem.Platform" />
+                <label>@AppResources.PlatformPlayedOn:</label>
+                <input class="form-input-custom" placeholder="@AppResources.PlatformPlayedOnPlaceholder" @bind="newItem.Platform" />
             </div>
 
             <div class="form-group-custom">
-                <label>Your Review:</label>
-                <textarea class="form-textarea-custom" rows="4" placeholder="Tell us your thoughts on this game" @bind="newItem.FunFact"></textarea>
+                <label>@AppResources.YourReview:</label>
+                <textarea class="form-textarea-custom" rows="4" placeholder="@AppResources.YourReviewPlaceholder" @bind="newItem.FunFact"></textarea>
             </div>
 
-            <div class="form-group-custom">
-                <label>Platform:</label>
-                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC, Mobile" @bind="newItem.Platform" />
-            </div>
-
-            <button class="submit-btn-custom" @onclick="AddReview">Add a Review!</button>
+            <button class="submit-btn-custom" @onclick="AddReview">@AppResources.AddReviewButton</button>
         </div>
 
         <div class="section-header">
-            <h2>Recent Video Game Reviews</h2>
+            <h2>@AppResources.RecentReviews</h2>
         </div>
 
         <div class="card-grid">
             @if (items.Count == 0)
             {
                 <div class="review-card-custom">
-                    <div class="review-text">Be the first to share a review!</div>
+                    <div class="review-text">@AppResources.NoReviews</div>
                 </div>
             }
             else
             {
                 @foreach (var item in items)
                 {
-                    var matchingGame = FindMatchingGame(item);
-
                     <div class="review-card-custom">
                         <div class="review-title">@item.LastName</div>
                         <div class="review-author">by @item.FirstName</div>
                         <div class="review-platform">
-                            Played on: @(string.IsNullOrWhiteSpace(item.Platform) ? "Not specified" : item.Platform)
+                            @AppResources.PlayedOn: @(string.IsNullOrWhiteSpace(item.Platform) ? AppResources.NotSpecified : item.Platform)
                         </div>
                         <div class="review-text">@item.FunFact</div>
-                        <div class="review-date">@(item.CreatedAt != default ? item.CreatedAt.ToString("MMM dd, yyyy h:mm tt") : "")</div>
                         <div class="review-date">@item.CreatedAt.ToString("MMMM d, yyyy 'at' hh:mm tt")</div>
                     </div>
                 }
@@ -97,45 +90,45 @@
     else
     {
         <div class="glass-card">
-            <h2 class="mb-4 text-center">Add New Game</h2>
+            <h2 class="mb-4 text-center">@AppResources.AddGameHeading</h2>
 
             <div class="form-group-custom">
-                <label>Game Title:</label>
-                <input class="form-input-custom" placeholder="Enter game title" @bind="newGame.Title" />
+                <label>@AppResources.GameTitle:</label>
+                <input class="form-input-custom" placeholder="@AppResources.GameTitlePlaceholder" @bind="newGame.Title" />
             </div>
 
             <div class="form-group-custom">
-                <label>Genre:</label>
-                <input class="form-input-custom" placeholder="e.g., Action, RPG, Puzzle" @bind="newGame.Genre" />
+                <label>@AppResources.Genre:</label>
+                <input class="form-input-custom" placeholder="@AppResources.GenrePlaceholder" @bind="newGame.Genre" />
             </div>
 
             <div class="form-group-custom">
-                <label>Developer:</label>
-                <input class="form-input-custom" placeholder="Game developer" @bind="newGame.Developer" />
+                <label>@AppResources.Developer:</label>
+                <input class="form-input-custom" placeholder="@AppResources.DeveloperPlaceholder" @bind="newGame.Developer" />
             </div>
 
             <div class="form-group-custom">
-                <label>Platform:</label>
-                <input class="form-input-custom" placeholder="e.g., PS5, Xbox, PC" @bind="newGame.Platform" />
+                <label>@AppResources.Platform:</label>
+                <input class="form-input-custom" placeholder="@AppResources.PlatformPlaceholder" @bind="newGame.Platform" />
             </div>
 
             <div class="form-group-custom">
-                <label>Release Year:</label>
-                <input class="form-input-custom" placeholder="2024" @bind="newGame.ReleaseYear" />
+                <label>@AppResources.ReleaseYear:</label>
+                <input class="form-input-custom" placeholder="@AppResources.ReleaseYearPlaceholder" @bind="newGame.ReleaseYear" />
             </div>
 
-            <button class="submit-btn-custom" @onclick="AddGame">Add Game</button>
+            <button class="submit-btn-custom" @onclick="AddGame">@AppResources.AddGameButton</button>
         </div>
 
         <div class="section-header">
-            <h2>Games Database</h2>
+            <h2>@AppResources.GamesDatabaseHeading</h2>
         </div>
 
         <div class="card-grid">
             @if (games.Count == 0)
             {
                 <div class="review-card-custom">
-                    <div class="review-text">No games yet. Add the first one!</div>
+                    <div class="review-text">@AppResources.NoGames</div>
                 </div>
             }
             else
@@ -144,11 +137,11 @@
                 {
                     <div class="review-card-custom">
                         <div class="review-title">@game.Title</div>
-                        <div class="review-author">Genre: @game.Genre</div>
+                        <div class="review-author">@AppResources.Genre: @game.Genre</div>
                         <div class="review-text">
-                            Developer: @game.Developer<br/>
-                            Platform: @game.Platform<br/>
-                            Released: @game.ReleaseYear
+                            @AppResources.Developer: @game.Developer<br />
+                            @AppResources.Platform: @game.Platform<br />
+                            @AppResources.Released: @game.ReleaseYear
                         </div>
                     </div>
                 }
@@ -185,12 +178,6 @@
     {
         errorMessage = "";
         successMessage = "";
-    }
-
-    Game? FindMatchingGame(Item item)
-    {
-        return games.FirstOrDefault(g =>
-            string.Equals(g.Title?.Trim(), item.LastName?.Trim(), StringComparison.OrdinalIgnoreCase));
     }
 
     async Task LoadData()
