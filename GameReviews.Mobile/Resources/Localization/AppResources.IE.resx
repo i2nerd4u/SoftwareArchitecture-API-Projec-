@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddReviewHeading" xml:space="preserve">
+    <value>Cuir Léirmheas Leis</value>
+  </data>
+  <data name="AuthorName" xml:space="preserve">
+    <value>Ainm an Údair</value>
+  </data>
+  <data name="AuthorNamePlaceholder" xml:space="preserve">
+    <value>Cuir isteach d’ainm</value>
+  </data>
   <data name="GamesDatabase" xml:space="preserve">
     <value>Bunachar Sonraí na gCluichí</value>
+  </data>
+  <data name="GameTitle" xml:space="preserve">
+    <value>Teideal an Chluiche</value>
   </data>
   <data name="RefreshData" xml:space="preserve">
     <value>Athnuaigh Sonraí</value>
@@ -126,10 +138,40 @@
   <data name="Reviews" xml:space="preserve">
     <value>Léirmheasanna</value>
   </data>
+  <data name="GameTitlePlaceholder" xml:space="preserve">
+    <value>Cuir isteach teideal an chluiche</value>
+  </data>
   <data name="Subtitle" xml:space="preserve">
     <value>Inis do dhaoine eile faoi na cluichí físe is fearr leat!</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Léirmheasanna Cluichí Físe</value>
+  </data>
+  <data name="PlatformPlayedOn" xml:space="preserve">
+    <value>Ardán a Imríodh Air</value>
+  </data>
+  <data name="PlatformPlayedOnPlaceholder" xml:space="preserve">
+    <value>m.sh. PS5, Xbox, PC, Mobile</value>
+  </data>
+  <data name="YourReview" xml:space="preserve">
+    <value>Do Léirmheas</value>
+  </data>
+  <data name="YourReviewPlaceholder" xml:space="preserve">
+    <value>Inis dúinn do thuairim faoin gcluiche seo</value>
+  </data>
+  <data name="AddReviewButton" xml:space="preserve">
+    <value>Cuir Léirmheas Leis!</value>
+  </data>
+  <data name="RecentReviews" xml:space="preserve">
+    <value>Léirmheasanna Cluichí is Déanaí</value>
+  </data>
+  <data name="NoReviews" xml:space="preserve">
+    <value>Bí ar an gcéad duine a roinnfidh léirmheas!</value>
+  </data>
+  <data name="PlayedOn" xml:space="preserve">
+    <value>Imríodh ar</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>Gan sonrú</value>
   </data>
 </root>

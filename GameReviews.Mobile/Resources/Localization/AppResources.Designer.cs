@@ -61,11 +61,119 @@ namespace GameReviews.Mobile.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add a Review!.
+        /// </summary>
+        internal static string AddReviewButton {
+            get {
+                return ResourceManager.GetString("AddReviewButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a Review.
+        /// </summary>
+        internal static string AddReviewHeading {
+            get {
+                return ResourceManager.GetString("AddReviewHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author Name.
+        /// </summary>
+        internal static string AuthorName {
+            get {
+                return ResourceManager.GetString("AuthorName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter your name.
+        /// </summary>
+        internal static string AuthorNamePlaceholder {
+            get {
+                return ResourceManager.GetString("AuthorNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Games Database.
         /// </summary>
         internal static string GamesDatabase {
             get {
                 return ResourceManager.GetString("GamesDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Title.
+        /// </summary>
+        internal static string GameTitle {
+            get {
+                return ResourceManager.GetString("GameTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the game title.
+        /// </summary>
+        internal static string GameTitlePlaceholder {
+            get {
+                return ResourceManager.GetString("GameTitlePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Be the first to share a review!.
+        /// </summary>
+        internal static string NoReviews {
+            get {
+                return ResourceManager.GetString("NoReviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not specified.
+        /// </summary>
+        internal static string NotSpecified {
+            get {
+                return ResourceManager.GetString("NotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Platform Played On.
+        /// </summary>
+        internal static string PlatformPlayedOn {
+            get {
+                return ResourceManager.GetString("PlatformPlayedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g., PS5, Xbox, PC, Mobile.
+        /// </summary>
+        internal static string PlatformPlayedOnPlaceholder {
+            get {
+                return ResourceManager.GetString("PlatformPlayedOnPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Played on.
+        /// </summary>
+        internal static string PlayedOn {
+            get {
+                return ResourceManager.GetString("PlayedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Video Game Reviews.
+        /// </summary>
+        internal static string RecentReviews {
+            get {
+                return ResourceManager.GetString("RecentReviews", resourceCulture);
             }
         }
         
@@ -102,6 +210,24 @@ namespace GameReviews.Mobile.Resources.Localization {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Review.
+        /// </summary>
+        internal static string YourReview {
+            get {
+                return ResourceManager.GetString("YourReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tell us your thoughts on this game.
+        /// </summary>
+        internal static string YourReviewPlaceholder {
+            get {
+                return ResourceManager.GetString("YourReviewPlaceholder", resourceCulture);
             }
         }
     }

@@ -117,8 +117,44 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddReviewButton" xml:space="preserve">
+    <value>Add a Review!</value>
+  </data>
+  <data name="AddReviewHeading" xml:space="preserve">
+    <value>Add a Review</value>
+  </data>
+  <data name="AuthorName" xml:space="preserve">
+    <value>Author Name</value>
+  </data>
+  <data name="AuthorNamePlaceholder" xml:space="preserve">
+    <value>Enter your name</value>
+  </data>
   <data name="GamesDatabase" xml:space="preserve">
     <value>Games Database</value>
+  </data>
+  <data name="GameTitle" xml:space="preserve">
+    <value>Game Title</value>
+  </data>
+  <data name="GameTitlePlaceholder" xml:space="preserve">
+    <value>Enter the game title</value>
+  </data>
+  <data name="NoReviews" xml:space="preserve">
+    <value>Be the first to share a review!</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="PlatformPlayedOn" xml:space="preserve">
+    <value>Platform Played On</value>
+  </data>
+  <data name="PlatformPlayedOnPlaceholder" xml:space="preserve">
+    <value>e.g., PS5, Xbox, PC, Mobile</value>
+  </data>
+  <data name="PlayedOn" xml:space="preserve">
+    <value>Played on</value>
+  </data>
+  <data name="RecentReviews" xml:space="preserve">
+    <value>Recent Video Game Reviews</value>
   </data>
   <data name="RefreshData" xml:space="preserve">
     <value>Refresh Data</value>
@@ -131,5 +167,11 @@
   </data>
   <data name="Title" xml:space="preserve">
     <value>Video Game Reviews</value>
+  </data>
+  <data name="YourReview" xml:space="preserve">
+    <value>Your Review</value>
+  </data>
+  <data name="YourReviewPlaceholder" xml:space="preserve">
+    <value>Tell us your thoughts on this game</value>
   </data>
 </root>
