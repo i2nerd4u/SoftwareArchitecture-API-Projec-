@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddGameButton" xml:space="preserve">
+    <value>Add Game</value>
+  </data>
+  <data name="AddGameHeading" xml:space="preserve">
+    <value>Add New Game</value>
+  </data>
   <data name="AddReviewButton" xml:space="preserve">
     <value>Add a Review!</value>
   </data>
@@ -129,7 +135,16 @@
   <data name="AuthorNamePlaceholder" xml:space="preserve">
     <value>Enter your name</value>
   </data>
+  <data name="Developer" xml:space="preserve">
+    <value>Developer</value>
+  </data>
+  <data name="DeveloperPlaceholder" xml:space="preserve">
+    <value>Game developer</value>
+  </data>
   <data name="GamesDatabase" xml:space="preserve">
+    <value>Games Database</value>
+  </data>
+  <data name="GamesDatabaseHeading" xml:space="preserve">
     <value>Games Database</value>
   </data>
   <data name="GameTitle" xml:space="preserve">
@@ -138,11 +153,26 @@
   <data name="GameTitlePlaceholder" xml:space="preserve">
     <value>Enter the game title</value>
   </data>
+  <data name="Genre" xml:space="preserve">
+    <value>Genre</value>
+  </data>
+  <data name="GenrePlaceholder" xml:space="preserve">
+    <value>e.g., Action, RPG, Puzzle</value>
+  </data>
+  <data name="NoGames" xml:space="preserve">
+    <value>No games yet. Add the first one!</value>
+  </data>
   <data name="NoReviews" xml:space="preserve">
     <value>Be the first to share a review!</value>
   </data>
   <data name="NotSpecified" xml:space="preserve">
     <value>Not specified</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platform</value>
+  </data>
+  <data name="PlatformPlaceholder" xml:space="preserve">
+    <value>e.g., PS5, Xbox, PC</value>
   </data>
   <data name="PlatformPlayedOn" xml:space="preserve">
     <value>Platform Played On</value>
@@ -158,6 +188,15 @@
   </data>
   <data name="RefreshData" xml:space="preserve">
     <value>Refresh Data</value>
+  </data>
+  <data name="Released" xml:space="preserve">
+    <value>Released</value>
+  </data>
+  <data name="ReleaseYear" xml:space="preserve">
+    <value>Release Year</value>
+  </data>
+  <data name="ReleaseYearPlaceholder" xml:space="preserve">
+    <value>2024</value>
   </data>
   <data name="Reviews" xml:space="preserve">
     <value>Reviews</value>

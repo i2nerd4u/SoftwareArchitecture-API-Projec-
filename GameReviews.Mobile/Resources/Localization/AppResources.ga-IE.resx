@@ -174,4 +174,43 @@
   <data name="NotSpecified" xml:space="preserve">
     <value>Gan sonrú</value>
   </data>
+  <data name="AddGameHeading" xml:space="preserve">
+    <value>Cuir Cluiche Nua Leis</value>
+  </data>
+  <data name="Genre" xml:space="preserve">
+    <value>Seánra</value>
+  </data>
+  <data name="GenrePlaceholder" xml:space="preserve">
+    <value>m.sh. Aicsin, RPG, Puzal</value>
+  </data>
+  <data name="Developer" xml:space="preserve">
+    <value>Forbróir</value>
+  </data>
+  <data name="DeveloperPlaceholder" xml:space="preserve">
+    <value>Forbróir an chluiche</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Ardán</value>
+  </data>
+  <data name="PlatformPlaceholder" xml:space="preserve">
+    <value>m.sh. PS5, Xbox, PC</value>
+  </data>
+  <data name="ReleaseYear" xml:space="preserve">
+    <value>Bliain Eisiúna</value>
+  </data>
+  <data name="ReleaseYearPlaceholder" xml:space="preserve">
+    <value>2024</value>
+  </data>
+  <data name="AddGameButton" xml:space="preserve">
+    <value>Cuir Cluiche Leis</value>
+  </data>
+  <data name="GamesDatabaseHeading" xml:space="preserve">
+    <value>Bunachar Sonraí na gCluichí</value>
+  </data>
+  <data name="NoGames" xml:space="preserve">
+    <value>Níl aon chluichí ann fós. Cuir an chéad cheann leis!</value>
+  </data>
+  <data name="Released" xml:space="preserve">
+    <value>Eisithe</value>
+  </data>
 </root>
