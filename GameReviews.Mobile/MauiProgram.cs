@@ -17,6 +17,8 @@ namespace GameReviews.Mobile
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddSingleton<LanguageService>();
+
             builder.Services.AddScoped(sp =>
             {
                 var handler = new HttpClientHandler();
@@ -32,7 +34,7 @@ namespace GameReviews.Mobile
             builder.Logging.AddDebug();
 #endif
 
-            var culture = new CultureInfo("ga-IE");
+            var culture = new CultureInfo("en-IE");
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
