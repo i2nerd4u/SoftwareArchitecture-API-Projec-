@@ -240,6 +240,14 @@ a, .btn-link {
     word-break: break-word;
 }
 
+.page-header h1,
+.page-header h1:focus,
+.page-header h1:active {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

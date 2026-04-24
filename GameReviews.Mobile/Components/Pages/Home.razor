@@ -2,12 +2,19 @@
 @using System.Net.Http.Json
 @using GameReviews.Mobile.Models
 @using GameReviews.Mobile.Resources.Localization
+@inject LanguageService LanguageService
+@inject IJSRuntime JS
 @inject HttpClient Http
 
 <div class="page-container">
     <div class="page-header">
         <h1>@AppResources.Title</h1>
         <p>@AppResources.Subtitle</p>
+    </div>
+
+    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
+        <button class="refresh-btn-custom" @onclick='() => ChangeLanguage("en-IE")'>English</button>
+        <button class="refresh-btn-custom" @onclick='() => ChangeLanguage("ga-IE")'>Gaeilge</button>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(errorMessage))
@@ -247,5 +254,11 @@
         {
             errorMessage = $"Error adding game: {ex.Message}";
         }
+    }
+
+    async Task ChangeLanguage(string cultureCode)
+    {
+        LanguageService.SetLanguage(cultureCode);
+        await JS.InvokeVoidAsync("location.reload");
     }
 }
