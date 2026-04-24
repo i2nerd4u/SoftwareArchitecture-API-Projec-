@@ -12,9 +12,10 @@
         <p>@AppResources.Subtitle</p>
     </div>
 
-    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
-        <button class="refresh-btn-custom" @onclick='() => ChangeLanguage("en-IE")'>English</button>
-        <button class="refresh-btn-custom" @onclick='() => ChangeLanguage("ga-IE")'>Gaeilge</button>
+    <div class="language-switch">
+        <span class="language-label">Language:</span>
+        <button class="lang-btn @(LanguageService.CurrentLanguage.StartsWith("en") ? "active-lang" : "")" @onclick='() => ChangeLanguage("en-IE")'>English</button>
+        <button class="lang-btn @(LanguageService.CurrentLanguage.StartsWith("ga") ? "active-lang" : "")" @onclick='() => ChangeLanguage("ga-IE")'>Gaeilge</button>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(errorMessage))
