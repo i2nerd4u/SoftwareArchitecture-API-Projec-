@@ -240,6 +240,51 @@ a, .btn-link {
     word-break: break-word;
 }
 
+.page-header h1,
+.page-header h1:focus,
+.page-header h1:active {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.language-switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0 20px 0;
+    flex-wrap: wrap;
+}
+
+.language-label {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.lang-btn {
+    background: #1f1f1f;
+    color: white;
+    border: 1px solid #4ecdc4;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+    .lang-btn.active-lang {
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        border: none;
+    }
+
+    .lang-btn:focus,
+    .lang-btn:active {
+        outline: none;
+        box-shadow: none;
+    }
+
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

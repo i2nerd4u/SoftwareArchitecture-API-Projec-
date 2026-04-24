@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 namespace GameReviews.Mobile
 {
@@ -15,6 +17,8 @@ namespace GameReviews.Mobile
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddSingleton<LanguageService>();
+
             builder.Services.AddScoped(sp =>
             {
                 var handler = new HttpClientHandler();
@@ -29,6 +33,10 @@ namespace GameReviews.Mobile
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
 #endif
+
+            var culture = new CultureInfo("en-IE");
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
 
             return builder.Build();
         }
