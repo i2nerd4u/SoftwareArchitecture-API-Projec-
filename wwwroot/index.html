@@ -36,6 +36,33 @@
             opacity: 0.9;
         }
         
+        .lang-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .lang-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn.active {
+            background: rgba(255,255,255,0.3);
+            border-color: #4ecdc4;
+        }
+        
+        .lang-btn:hover {
+            transform: translateY(-2px);
+        }
+        
         .form-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -226,8 +253,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Video Game Reviews</h1>
-            <p>Tell others about your Favourite video games!</p>
+            <h1 id="pageTitle">Video Game Reviews</h1>
+            <p id="pageSubtitle">Tell others about your favourite video games!</p>
+        </div>
+        
+        <!-- Language Toggle -->
+        <div class="lang-toggle">
+            <button onclick="setLang('en')" id="langEn" class="lang-btn active">English</button>
+            <button onclick="setLang('ga')" id="langGa" class="lang-btn">Gaeilge</button>
         </div>
         
         <!-- Navigation Tabs -->
@@ -239,82 +272,202 @@
         <!-- Reviews Section -->
         <div id="reviewsSection">
         <div class="form-card">
+            <h2 id="addReviewHeading" style="margin-bottom: 20px; text-align: center;">Add a Review</h2>
             <form id="personForm">
                 <div class="form-group">
-                    <label for="firstName">Author Name:</label>
-                    <input type="text" id="firstName" placeholder="Enter your first name" required>
+                    <label id="labelAuthor" for="firstName">Author Name:</label>
+                    <input type="text" id="firstName" placeholder="Enter your name" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="lastName">Game Title:</label>
+                    <label id="labelGameTitle" for="gametitle">Game Title:</label>
                     <input type="text" id="gametitle" placeholder="Enter the game title" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="platform">Platform:</label>
-                    <input type="text" id="platform" placeholder="Enter the game System you played this game on" required>
+                    <label id="labelPlatformPlayed" for="platform">Platform Played On:</label>
+                    <input type="text" id="platform" placeholder="e.g., PS5, Xbox, PC, Mobile" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="funFact">Your Review:</label>
+                    <label id="labelYourReview" for="funFact">Your Review:</label>
                     <textarea id="funFact" rows="3" placeholder="Tell us your thoughts on this game" required></textarea>
                 </div>
                 
-                <button type="submit" class="submit-btn">Add a Review!</button>
+                <button type="submit" class="submit-btn" id="addReviewBtn">Add a Review!</button>
             </form>
             <div id="successMessage"></div>
         </div>
         
         <div class="people-section">
             <div class="people-header">
-                <h2>Recent Video Game Reviews</h2>
+                <h2 id="recentReviewsHeading">Recent Video Game Reviews</h2>
             </div>
             <div id="peopleGrid" class="people-grid"></div>
-            <button onclick="loadPeople()" class="refresh-btn">Refresh Reviews</button>
+            <button onclick="loadPeople()" class="refresh-btn" id="refreshReviewsBtn">Refresh Reviews</button>
         </div>
         </div>
         
         <!-- Games Section -->
         <div id="gamesSection" style="display: none;">
         <div class="form-card">
-            <h2 style="margin-bottom: 20px;">Add New Game</h2>
+            <h2 id="addGameHeading" style="margin-bottom: 20px;">Add New Game</h2>
             <form id="gameForm">
                 <div class="form-group">
-                    <label for="gameTitle">Game Title:</label>
+                    <label id="labelGameTitleGame" for="gameTitle">Game Title:</label>
                     <input type="text" id="gameTitle" placeholder="Enter game title" required>
                 </div>
                 <div class="form-group">
-                    <label for="genre">Genre:</label>
+                    <label id="labelGenre" for="genre">Genre:</label>
                     <input type="text" id="genre" placeholder="e.g., Action, RPG, Puzzle" required>
                 </div>
                 <div class="form-group">
-                    <label for="developer">Developer:</label>
+                    <label id="labelDeveloper" for="developer">Developer:</label>
                     <input type="text" id="developer" placeholder="Game developer" required>
                 </div>
                 <div class="form-group">
-                    <label for="gamePlatform">Platform:</label>
+                    <label id="labelPlatform" for="gamePlatform">Platform:</label>
                     <input type="text" id="gamePlatform" placeholder="e.g., PS5, Xbox, PC" required>
                 </div>
                 <div class="form-group">
-                    <label for="releaseYear">Release Year:</label>
+                    <label id="labelReleaseYear" for="releaseYear">Release Year:</label>
                     <input type="text" id="releaseYear" placeholder="2024" required>
                 </div>
-                <button type="submit" class="submit-btn">Add Game</button>
+                <button type="submit" class="submit-btn" id="addGameBtn">Add Game</button>
             </form>
             <div id="gameSuccessMessage"></div>
         </div>
         
         <div class="people-section">
             <div class="people-header">
-                <h2>Games Database</h2>
+                <h2 id="gamesDatabaseHeading">Games Database</h2>
             </div>
             <div id="gamesGrid" class="people-grid"></div>
-            <button onclick="loadGames()" class="refresh-btn">Refresh Games</button>
+            <button onclick="loadGames()" class="refresh-btn" id="refreshGamesBtn">Refresh Games</button>
         </div>
         </div>
     </div>
 
     <script>
+        // Translations
+        const translations = {
+            en: {
+                title: "Video Game Reviews",
+                subtitle: "Tell others about your favourite video games!",
+                reviews: "Reviews",
+                gamesDatabase: "Games Database",
+                addReviewHeading: "Add a Review",
+                authorName: "Author Name:",
+                authorNamePlaceholder: "Enter your name",
+                gameTitle: "Game Title:",
+                gameTitlePlaceholder: "Enter the game title",
+                platformPlayedOn: "Platform Played On:",
+                platformPlayedOnPlaceholder: "e.g., PS5, Xbox, PC, Mobile",
+                yourReview: "Your Review:",
+                yourReviewPlaceholder: "Tell us your thoughts on this game",
+                addReviewButton: "Add a Review!",
+                recentReviews: "Recent Video Game Reviews",
+                refreshData: "Refresh Reviews",
+                noReviews: "Be the first to share a review!",
+                playedOn: "Played on",
+                notSpecified: "Not specified",
+                addGameHeading: "Add New Game",
+                genre: "Genre:",
+                genrePlaceholder: "e.g., Action, RPG, Puzzle",
+                developer: "Developer:",
+                developerPlaceholder: "Game developer",
+                platform: "Platform:",
+                platformPlaceholder: "e.g., PS5, Xbox, PC",
+                releaseYear: "Release Year:",
+                releaseYearPlaceholder: "2024",
+                addGameButton: "Add Game",
+                gamesDatabaseHeading: "Games Database",
+                refreshGames: "Refresh Games",
+                noGames: "No games yet. Add the first one!",
+                released: "Released"
+            },
+            ga: {
+                title: "Léirmheasanna Cluichí Físe",
+                subtitle: "Inis do dhaoine eile faoi na cluichí físe is fearr leat!",
+                reviews: "Léirmheasanna",
+                gamesDatabase: "Bunachar Sonraí na gCluichí",
+                addReviewHeading: "Cuir Léirmheas Leis",
+                authorName: "Ainm an Údair:",
+                authorNamePlaceholder: "Cuir isteach d'ainm",
+                gameTitle: "Teideal an Chluiche:",
+                gameTitlePlaceholder: "Cuir isteach teideal an chluiche",
+                platformPlayedOn: "Ardán a Imríodh Air:",
+                platformPlayedOnPlaceholder: "m.sh. PS5, Xbox, PC, Mobile",
+                yourReview: "Do Léirmheas:",
+                yourReviewPlaceholder: "Inis dúinn do thuairim faoin gcluiche seo",
+                addReviewButton: "Cuir Léirmheas Leis!",
+                recentReviews: "Léirmheasanna Cluichí is Déanaí",
+                refreshData: "Athnuaigh Sonraí",
+                noReviews: "Bí ar an gcéad duine a roinnfidh léirmheas!",
+                playedOn: "Imríodh ar",
+                notSpecified: "Gan sonrú",
+                addGameHeading: "Cuir Cluiche Nua Leis",
+                genre: "Seánra:",
+                genrePlaceholder: "m.sh. Aicsin, RPG, Puzal",
+                developer: "Forbróir:",
+                developerPlaceholder: "Forbróir an chluiche",
+                platform: "Ardán:",
+                platformPlaceholder: "m.sh. PS5, Xbox, PC",
+                releaseYear: "Bliain Eisiúna:",
+                releaseYearPlaceholder: "2024",
+                addGameButton: "Cuir Cluiche Leis",
+                gamesDatabaseHeading: "Bunachar Sonraí na gCluichí",
+                refreshGames: "Athnuaigh Sonraí",
+                noGames: "Níl aon chluichí ann fós. Cuir an chéad cheann leis!",
+                released: "Eisithe"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+            document.getElementById('langGa').classList.toggle('active', lang === 'ga');
+
+            document.getElementById('pageTitle').textContent = t.title;
+            document.getElementById('pageSubtitle').textContent = t.subtitle;
+            document.getElementById('reviewsTab').textContent = t.reviews;
+            document.getElementById('gamesTab').textContent = t.gamesDatabase;
+            document.getElementById('addReviewHeading').textContent = t.addReviewHeading;
+            document.getElementById('labelAuthor').textContent = t.authorName;
+            document.getElementById('firstName').placeholder = t.authorNamePlaceholder;
+            document.getElementById('labelGameTitle').textContent = t.gameTitle;
+            document.getElementById('gametitle').placeholder = t.gameTitlePlaceholder;
+            document.getElementById('labelPlatformPlayed').textContent = t.platformPlayedOn;
+            document.getElementById('platform').placeholder = t.platformPlayedOnPlaceholder;
+            document.getElementById('labelYourReview').textContent = t.yourReview;
+            document.getElementById('funFact').placeholder = t.yourReviewPlaceholder;
+            document.getElementById('addReviewBtn').textContent = t.addReviewButton;
+            document.getElementById('recentReviewsHeading').textContent = t.recentReviews;
+            document.getElementById('refreshReviewsBtn').textContent = t.refreshData;
+            document.getElementById('addGameHeading').textContent = t.addGameHeading;
+            document.getElementById('labelGameTitleGame').textContent = t.gameTitle;
+            document.getElementById('gameTitle').placeholder = t.gameTitlePlaceholder;
+            document.getElementById('labelGenre').textContent = t.genre;
+            document.getElementById('genre').placeholder = t.genrePlaceholder;
+            document.getElementById('labelDeveloper').textContent = t.developer;
+            document.getElementById('developer').placeholder = t.developerPlaceholder;
+            document.getElementById('labelPlatform').textContent = t.platform;
+            document.getElementById('gamePlatform').placeholder = t.platformPlaceholder;
+            document.getElementById('labelReleaseYear').textContent = t.releaseYear;
+            document.getElementById('releaseYear').placeholder = t.releaseYearPlaceholder;
+            document.getElementById('addGameBtn').textContent = t.addGameButton;
+            document.getElementById('gamesDatabaseHeading').textContent = t.gamesDatabaseHeading;
+            document.getElementById('refreshGamesBtn').textContent = t.refreshGames;
+
+            // Re-render cards with new language
+            loadPeople();
+            loadGames();
+        }
+
         function showSection(section) {
             if (section === 'reviews') {
                 document.getElementById('reviewsSection').style.display = 'block';
@@ -363,7 +516,7 @@
             } catch (error) {
                 showGameSuccessMessage('Error: ' + error.message);
             } finally {
-                submitBtn.textContent = 'Add Game';
+                submitBtn.textContent = translations[currentLang].addGameButton;
                 submitBtn.disabled = false;
             }
         });
@@ -376,50 +529,44 @@
         
         async function loadGames() {
             const gridDiv = document.getElementById('gamesGrid');
-            gridDiv.innerHTML = '<div class="loading">Loading games...</div>';
+            const t = translations[currentLang];
+            gridDiv.innerHTML = '<div class="loading">Loading...</div>';
             
             try {
                 const response = await fetch('/api/games');
                 const games = await response.json();
                 
                 if (games.length === 0) {
-                    gridDiv.innerHTML = '<div class="loading">No games yet. Add the first one!</div>';
+                    gridDiv.innerHTML = `<div class="loading">${t.noGames}</div>`;
                     return;
                 }
                 
                 gridDiv.innerHTML = games.map((game, index) => `
                     <div class="person-card" style="animation-delay: ${index * 0.1}s">
                         <div class="person-name">${game.title}</div>
-                        <div class="person-author">Genre: ${game.genre}</div>
-                        <div class="person-fact">Developer: ${game.developer}<br>Platform: ${game.platform}<br>Released: ${game.releaseYear}</div>
+                        <div class="person-author">${t.genre.replace(':', '')} ${game.genre}</div>
+                        <div class="person-fact">${t.developer.replace(':', '')} ${game.developer}<br>${t.platform.replace(':', '')} ${game.platform}<br>${t.released}: ${game.releaseYear}</div>
                         <div class="person-date">${new Date(game.createdAt).toLocaleDateString()}</div>
                     </div>
                 `).join('');
             } catch (error) {
-                gridDiv.innerHTML = '<div class="loading">Error loading games. Please try again!</div>';
+                gridDiv.innerHTML = '<div class="loading">Error loading games.</div>';
             }
         }
+
         document.getElementById('personForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = e.target.querySelector('.submit-btn');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Adding Your Story...';
+            submitBtn.textContent = 'Adding...';
             submitBtn.disabled = true;
             
             const person = {
-                reviewerName: document.getElementById('firstName').value,
-                gameTitle: document.getElementById('gametitle').value,
-                reviewText: document.getElementById('funFact').value,
-                platform: document.getElementById('platform').value,    
-                // Also send old field names for backward compatibility with Lambda
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('gametitle').value,
                 funFact: document.getElementById('funFact').value,
                 platform: document.getElementById('platform').value
             };
-            
-            console.log('Submitting:', person);
             
             try {
                 const response = await fetch('/api/items', {
@@ -429,21 +576,17 @@
                 });
                 
                 if (response.ok) {
-                    const result = await response.json();
-                    console.log('Response:', result);
-                    showSuccessMessage('Your review has been added successfully!');
+                    showSuccessMessage('Review added successfully!');
                     document.getElementById('personForm').reset();
                     setTimeout(() => loadPeople(), 1000);
                 } else {
                     const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    showSuccessMessage('Oops! Something went wrong. Please try again.');
+                    showSuccessMessage('Error: ' + errorText);
                 }
             } catch (error) {
-                console.error('Submit error:', error);
                 showSuccessMessage('Error: ' + error.message);
             } finally {
-                submitBtn.textContent = originalText;
+                submitBtn.textContent = translations[currentLang].addReviewButton;
                 submitBtn.disabled = false;
             }
         });
@@ -451,50 +594,47 @@
         function showSuccessMessage(message) {
             const messageDiv = document.getElementById('successMessage');
             messageDiv.innerHTML = `<div class="success-message">${message}</div>`;
-            setTimeout(() => {
-                messageDiv.innerHTML = '';
-            }, 4000);
+            setTimeout(() => messageDiv.innerHTML = '', 4000);
         }
         
         async function loadPeople() {
             const gridDiv = document.getElementById('peopleGrid');
-            gridDiv.innerHTML = '<div class="loading">Loading reviews...</div>';
+            const t = translations[currentLang];
+            gridDiv.innerHTML = '<div class="loading">Loading...</div>';
             
             try {
                 const response = await fetch('/api/items');
                 const people = await response.json();
                 
                 if (people.length === 0) {
-                    gridDiv.innerHTML = '<div class="loading">Be the first to share a review!</div>';
+                    gridDiv.innerHTML = `<div class="loading">${t.noReviews}</div>`;
                     return;
                 }
                 
-                gridDiv.innerHTML = people.map((person, index) => {
-                    return `
-                        <div class="person-card" style="animation-delay: ${index * 0.1}s">
-                            <div class="person-name">${person.gameTitle || person.lastName || 'Unknown Game'}</div>
-                            <div class="person-author">by ${person.reviewerName || person.firstName || 'Anonymous'}</div>
-                            <div class="person-platform">${person.platform || 'No platform specified'}</div>
-                            <div class="person-fact">${person.reviewText || person.funFact || 'No review text'}</div>
-                            <div class="person-date">${new Date(person.createdAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}</div>
-                        </div>
-                    `;
-                }).join('');
+                gridDiv.innerHTML = people.map((person, index) => `
+                    <div class="person-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="person-name">${person.lastName || 'Unknown Game'}</div>
+                        <div class="person-author">by ${person.firstName || 'Anonymous'}</div>
+                        <div class="person-platform">${t.playedOn}: ${person.platform || t.notSpecified}</div>
+                        <div class="person-fact">${person.funFact || 'No review text'}</div>
+                        <div class="person-date">${new Date(person.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</div>
+                    </div>
+                `).join('');
             } catch (error) {
-                gridDiv.innerHTML = '<div class="loading">Error loading stories. Please try again!</div>';
+                gridDiv.innerHTML = '<div class="loading">Error loading reviews.</div>';
             }
         }
         
-        // Load people when page loads
+        // Load on startup
         loadPeople();
         
-        // Add some interactive effects
+        // Card hover effects
         document.addEventListener('mousemove', (e) => {
             const cards = document.querySelectorAll('.person-card');
             cards.forEach(card => {
@@ -507,7 +647,6 @@
                     const centerY = rect.height / 2;
                     const rotateX = (y - centerY) / 10;
                     const rotateY = (centerX - x) / 10;
-                    
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
                 } else {
                     card.style.transform = '';
