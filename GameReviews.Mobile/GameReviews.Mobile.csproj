@@ -26,6 +26,7 @@
                <MauiXaml Update="MyPage.xaml" Inflator="Default" /> (reverts to defaults: Runtime for Debug, XamlC for Release)
                <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
         <MauiXamlInflator>SourceGen</MauiXamlInflator>
+        <JavaSdkDirectory>C:\Users\Karls Pc\AppData\Local\Programs\Eclipse Adoptium\jdk-17.0.17.10-hotspot</JavaSdkDirectory>
 
         <!-- Display name -->
         <ApplicationTitle>GameReviews.Mobile</ApplicationTitle>
