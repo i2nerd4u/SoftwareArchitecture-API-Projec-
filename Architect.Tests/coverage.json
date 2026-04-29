@@ -1,0 +1,310 @@
+{
+  "Software architecture api.dll": {
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\WeatherForecast.cs": {
+      "Software_architecture_api.WeatherForecast": {
+        "System.DateOnly Software_architecture_api.WeatherForecast::get_Date()": {
+          "Lines": {
+            "5": 7
+          },
+          "Branches": []
+        },
+        "System.Int32 Software_architecture_api.WeatherForecast::get_TemperatureC()": {
+          "Lines": {
+            "7": 8
+          },
+          "Branches": []
+        },
+        "System.Int32 Software_architecture_api.WeatherForecast::get_TemperatureF()": {
+          "Lines": {
+            "9": 1
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.WeatherForecast::get_Summary()": {
+          "Lines": {
+            "11": 7
+          },
+          "Branches": []
+        }
+      }
+    },
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\Models\\Game.cs": {
+      "Software_architecture_api.Models.Game": {
+        "System.String Software_architecture_api.Models.Game::get_Id()": {
+          "Lines": {
+            "5": 143
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Game::get_Title()": {
+          "Lines": {
+            "6": 136
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Game::get_Genre()": {
+          "Lines": {
+            "7": 105
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Game::get_Developer()": {
+          "Lines": {
+            "8": 106
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Game::get_Platform()": {
+          "Lines": {
+            "9": 105
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Game::get_ReleaseYear()": {
+          "Lines": {
+            "10": 105
+          },
+          "Branches": []
+        },
+        "System.DateTime Software_architecture_api.Models.Game::get_CreatedAt()": {
+          "Lines": {
+            "11": 109
+          },
+          "Branches": []
+        }
+      }
+    },
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\Models\\Item.cs": {
+      "Software_architecture_api.Models.Item": {
+        "System.String Software_architecture_api.Models.Item::get_Id()": {
+          "Lines": {
+            "5": 102
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Item::get_FirstName()": {
+          "Lines": {
+            "6": 91
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Item::get_LastName()": {
+          "Lines": {
+            "7": 76
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Item::get_FunFact()": {
+          "Lines": {
+            "8": 72
+          },
+          "Branches": []
+        },
+        "System.String Software_architecture_api.Models.Item::get_Platform()": {
+          "Lines": {
+            "9": 75
+          },
+          "Branches": []
+        },
+        "System.DateTime Software_architecture_api.Models.Item::get_CreatedAt()": {
+          "Lines": {
+            "10": 77
+          },
+          "Branches": []
+        }
+      }
+    },
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\Data\\AppDbContext.cs": {
+      "Software_architecture_api.Data.AppDbContext": {
+        "Microsoft.EntityFrameworkCore.DbSet`1<Software_architecture_api.Models.Item> Software_architecture_api.Data.AppDbContext::get_Items()": {
+          "Lines": {
+            "13": 36
+          },
+          "Branches": []
+        },
+        "Microsoft.EntityFrameworkCore.DbSet`1<Software_architecture_api.Models.Game> Software_architecture_api.Data.AppDbContext::get_Games()": {
+          "Lines": {
+            "14": 37
+          },
+          "Branches": []
+        },
+        "System.Void Software_architecture_api.Data.AppDbContext::.ctor(Microsoft.EntityFrameworkCore.DbContextOptions`1<Software_architecture_api.Data.AppDbContext>)": {
+          "Lines": {
+            "9": 40,
+            "10": 40,
+            "11": 40
+          },
+          "Branches": []
+        }
+      }
+    },
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\Controllers\\GamesController.cs": {
+      "Software_architecture_api.Controllers.GamesController": {
+        "System.Void Software_architecture_api.Controllers.GamesController::.ctor(Software_architecture_api.Data.AppDbContext)": {
+          "Lines": {
+            "14": 16,
+            "15": 16,
+            "16": 16,
+            "17": 16
+          },
+          "Branches": []
+        }
+      },
+      "Software_architecture_api.Controllers.GamesController/<CreateGame>d__3": {
+        "System.Void Software_architecture_api.Controllers.GamesController/<CreateGame>d__3::MoveNext()": {
+          "Lines": {
+            "38": 9,
+            "40": 9,
+            "41": 9,
+            "42": 8,
+            "44": 9,
+            "46": 9,
+            "47": 8,
+            "49": 8,
+            "51": 1,
+            "52": 1,
+            "53": 1,
+            "55": 9
+          },
+          "Branches": [
+            {
+              "Line": 41,
+              "Offset": 45,
+              "EndOffset": 47,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 8
+            },
+            {
+              "Line": 41,
+              "Offset": 45,
+              "EndOffset": 78,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 9
+            }
+          ]
+        }
+      },
+      "Software_architecture_api.Controllers.GamesController/<GetGames>d__2": {
+        "System.Void Software_architecture_api.Controllers.GamesController/<GetGames>d__2::MoveNext()": {
+          "Lines": {
+            "21": 7,
+            "23": 7,
+            "24": 7,
+            "25": 7,
+            "26": 7,
+            "28": 6,
+            "30": 1,
+            "31": 1,
+            "32": 1,
+            "34": 7
+          },
+          "Branches": []
+        }
+      }
+    },
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\Controllers\\ItemsController.cs": {
+      "Software_architecture_api.Controllers.ItemsController": {
+        "System.Void Software_architecture_api.Controllers.ItemsController::.ctor(Software_architecture_api.Data.AppDbContext)": {
+          "Lines": {
+            "14": 15,
+            "15": 15,
+            "16": 15,
+            "17": 15
+          },
+          "Branches": []
+        }
+      },
+      "Software_architecture_api.Controllers.ItemsController/<CreateItem>d__3": {
+        "System.Void Software_architecture_api.Controllers.ItemsController/<CreateItem>d__3::MoveNext()": {
+          "Lines": {
+            "38": 8,
+            "40": 8,
+            "41": 8,
+            "42": 7,
+            "44": 8,
+            "46": 8,
+            "47": 7,
+            "49": 7,
+            "51": 1,
+            "52": 1,
+            "53": 1,
+            "55": 8
+          },
+          "Branches": [
+            {
+              "Line": 41,
+              "Offset": 45,
+              "EndOffset": 47,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 7
+            },
+            {
+              "Line": 41,
+              "Offset": 45,
+              "EndOffset": 78,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 8
+            }
+          ]
+        }
+      },
+      "Software_architecture_api.Controllers.ItemsController/<GetItems>d__2": {
+        "System.Void Software_architecture_api.Controllers.ItemsController/<GetItems>d__2::MoveNext()": {
+          "Lines": {
+            "21": 7,
+            "23": 7,
+            "24": 7,
+            "25": 7,
+            "26": 7,
+            "28": 6,
+            "30": 1,
+            "31": 1,
+            "32": 1,
+            "34": 7
+          },
+          "Branches": []
+        }
+      }
+    },
+    "C:\\Users\\Karls Pc\\Desktop\\College2025\\Software arch 2\\Software architecture api\\Controllers\\WeatherForecastController.cs": {
+      "Software_architecture_api.Controllers.WeatherForecastController": {
+        "System.Collections.Generic.IEnumerable`1<Software_architecture_api.WeatherForecast> Software_architecture_api.Controllers.WeatherForecastController::Get()": {
+          "Lines": {
+            "23": 1,
+            "24": 6,
+            "25": 6,
+            "26": 6,
+            "27": 6,
+            "28": 6,
+            "29": 6,
+            "30": 1,
+            "31": 1
+          },
+          "Branches": []
+        },
+        "System.Void Software_architecture_api.Controllers.WeatherForecastController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Software_architecture_api.Controllers.WeatherForecastController>)": {
+          "Lines": {
+            "16": 1,
+            "17": 1,
+            "18": 1,
+            "19": 1
+          },
+          "Branches": []
+        },
+        "System.Void Software_architecture_api.Controllers.WeatherForecastController::.cctor()": {
+          "Lines": {
+            "9": 1,
+            "10": 1,
+            "11": 1,
+            "12": 1
+          },
+          "Branches": []
+        }
+      }
+    }
+  }
+}

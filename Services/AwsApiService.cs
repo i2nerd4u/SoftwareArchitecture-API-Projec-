@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Software_architecture_api.Models;
 
 namespace Software_architecture_api.Services;
 
+[ExcludeFromCodeCoverage]
 public class AwsApiService
 {
     private readonly HttpClient _httpClient;
